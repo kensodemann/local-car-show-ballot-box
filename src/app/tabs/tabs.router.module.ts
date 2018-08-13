@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
-import { HomePage } from '../home/home.page';
-import { AboutPage } from '../about/about.page';
-import { ContactPage } from '../contact/contact.page';
+import { CarShowsPage } from '../car-shows/car-shows.page';
+import { BallotsPage } from '../ballots/ballots.page';
+import { ResultsPage } from '../results/results.page';
 
 const routes: Routes = [
   {
@@ -12,25 +12,25 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
-        path: 'home',
-        outlet: 'home',
-        component: HomePage
+        path: 'car-shows',
+        outlet: 'car-shows',
+        component: CarShowsPage
       },
       {
-        path: 'about',
-        outlet: 'about',
-        component: AboutPage
+        path: 'ballots',
+        outlet: 'ballots',
+        component: BallotsPage
       },
       {
-        path: 'contact',
-        outlet: 'contact',
-        component: ContactPage
+        path: 'results',
+        outlet: 'results',
+        component: ResultsPage
       }
     ]
   },
   {
     path: '',
-    redirectTo: '/tabs/(home:home)',
+    redirectTo: '/tabs/(car-shows:car-shows)',
     pathMatch: 'full'
   }
 ];
