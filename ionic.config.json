@@ -1,0 +1,8 @@
+{
+  "name": "car-show-ballot-box",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular",
+  "pro_id": "8a4fdc05"
+}
