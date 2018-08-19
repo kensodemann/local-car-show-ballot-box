@@ -9,6 +9,24 @@ export function createOverlayControllerMock(name: string, element?: any) {
   });
 }
 
+// NOTE: the next BETA will have breaking changes where these become navigateForward and navigateRoot
 export function createNavControllerMock() {
-  return jasmine.createSpyObj('NavController', ['goForward']);
+  return jasmine.createSpyObj('NavController', ['goForward', 'goRoot']);
+}
+
+export function createIdentityMock() {
+  return jasmine.createSpyObj('Identity', {
+    get: Promise.resolve(),
+    remove: undefined,
+    set: undefined
+  });
+}
+
+export function createStorageMock() {
+  return jasmine.createSpyObj('Storage', {
+    get: Promise.resolve(),
+    ready: Promise.resolve(),
+    remove: Promise.resolve(),
+    set: Promise.resolve()
+  });
 }

@@ -7,7 +7,8 @@ const routes: Routes = [
     path: 'create-new-show',
     loadChildren:
       './create-new-show/create-new-show.module#CreateNewShowPageModule'
-  }
+  },
+  { path: 'login', loadChildren: './login/login.module#LoginPageModule' }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
