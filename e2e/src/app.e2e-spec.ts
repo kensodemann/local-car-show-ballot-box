@@ -1,14 +1,34 @@
-import { AppPage } from './app.po';
+import { Page, AppController } from './test-control';
 
-describe('new App', () => {
-  let page: AppPage;
+describe('Application', () => {
+  let app: AppController;
 
   beforeEach(() => {
-    page = new AppPage();
+    app = new AppController();
   });
 
-  it('should display welcome message', () => {
-    page.navigateTo();
-    expect(page.getParagraphText()).toContain('The world is your oyster.');
+  it('Defaults to Car Shows page', () => {
+    app.navigateTo(Page.Root);
+    expect(app.getPageTitle()).toEqual('Car Shows');
+  });
+
+  it('allows browsing to car shows', () => {
+    app.navigateTo(Page.CarShows);
+    expect(app.getPageTitle()).toEqual('Car Shows');
+  });
+
+  it('allows browsing to ballots', () => {
+    app.navigateTo(Page.Ballots);
+    expect(app.getPageTitle()).toEqual('Ballots');
+  });
+
+  it('allows browsing to results', () => {
+    app.navigateTo(Page.Results);
+    expect(app.getPageTitle()).toEqual('Results');
+  });
+
+  it('allows browsing to the "Create New Show" page', () => {
+    app.navigateTo(Page.CreateNewShow);
+    expect(app.getPageTitle()).toEqual('Car Show');
   });
 });
