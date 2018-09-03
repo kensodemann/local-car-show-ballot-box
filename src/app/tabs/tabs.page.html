@@ -2,10 +2,10 @@
   <ion-tab label="Car Shows" icon="car" href="/tabs/(car-shows:car-shows)">
     <ion-router-outlet name="car-shows"></ion-router-outlet>
   </ion-tab>
-  <ion-tab label="Ballots" icon="checkbox-outline" href="/tabs/(ballots:ballots)">
+  <ion-tab label="Ballots" icon="checkbox-outline" href="/tabs/(ballots:ballots)" [disabled]="noCurrentShow">
     <ion-router-outlet name="ballots"></ion-router-outlet>
   </ion-tab>
-  <ion-tab label="Results" icon="list-box" href="/tabs/(results:results)">
+  <ion-tab label="Results" icon="list-box" href="/tabs/(results:results)" [disabled]="noCurrentShow">
     <ion-router-outlet name="results"></ion-router-outlet>
   </ion-tab>
 </ion-tabs>

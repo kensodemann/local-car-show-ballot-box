@@ -76,15 +76,16 @@ describe('CarShowsService', () => {
       httpTestingController.verify();
     });
 
-    it('caches the current car show', () => {
-      carShows.getCurrent().subscribe(c => expect(c).toEqual(carShow));
+    it('triggers the current subject', () => {
+      let current: CarShow;
+      carShows.currentChanged.subscribe(c => current = c);
+      carShows.getCurrent().subscribe();
       const req = httpTestingController.expectOne(
         `${environment.dataService}/car-shows/current`
       );
       expect(req.request.method).toEqual('GET');
       req.flush(carShow);
-      carShows.getCurrent().subscribe(c => expect(c).toEqual(carShow));
-      httpTestingController.verify();
+      expect(current).toEqual(carShow);
     });
   });
 });
