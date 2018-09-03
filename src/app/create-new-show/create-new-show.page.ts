@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CarShowCarClass } from '../models/car-show-car-class';
+import { CarClass } from '../models/car-class';
 
 @Component({
   selector: 'app-create-new-show',
@@ -10,7 +10,7 @@ import { CarShowCarClass } from '../models/car-show-car-class';
 export class CreateNewShowPage implements OnInit {
   name: string;
   date: string;
-  classes: Array<CarShowCarClass>;
+  classes: Array<CarClass>;
 
   constructor() {}
 
@@ -22,77 +22,77 @@ export class CreateNewShowPage implements OnInit {
         id: 1,
         name: 'A',
         description: 'Class A',
-        includeInShow: true
+        active: true
       }, {
         id: 2,
         name: 'B',
         description: 'Class B',
-        includeInShow: true
+        active: true
       }, {
         id: 3,
         name: 'C',
         description: 'Class C',
-        includeInShow: true
+        active: true
       }, {
         id: 4,
         name: 'D',
         description: 'Class D',
-        includeInShow: true
+        active: true
       }, {
         id: 5,
         name: 'E',
         description: 'Class E',
-        includeInShow: true
+        active: true
       }, {
         id: 6,
         name: 'F',
         description: 'Class F',
-        includeInShow: true
+        active: true
       }, {
         id: 7,
         name: 'G',
         description: 'Class G',
-        includeInShow: true
+        active: true
       }, {
         id: 8,
         name: 'H',
         description: 'Class H',
-        includeInShow: true
+        active: true
       }, {
         id: 9,
         name: 'I',
         description: 'Class I',
-        includeInShow: true
+        active: true
       }, {
         id: 10,
         name: 'J',
         description: 'Class J',
-        includeInShow: true
+        active: true
       }, {
         id: 11,
         name: 'K',
         description: 'Class K',
-        includeInShow: true
+        active: true
       }, {
         id: 12,
         name: 'L',
         description: 'Class L',
-        includeInShow: true
+        active: true
       }, {
         id: 13,
         name: 'M',
         description: 'Class M',
-        includeInShow: true
+        active: true
       }, {
         id: 14,
         name: 'N',
         description: 'Class N',
-        includeInShow: true
+        active: true
       }, {
         id: 15,
         name: 'O',
         description: 'Class O',
-        includeInShow: true
+        active: true
       }];
     }, 2000);
   }

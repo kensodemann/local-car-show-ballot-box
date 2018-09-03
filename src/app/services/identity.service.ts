@@ -17,8 +17,8 @@ export class IdentityService {
   get(): Observable<User> {
     if (!this.user) {
       return this.http
-        .get(`${environment.dataService}/users/current`)
-        .pipe(tap(u => (this.user = u as User))) as Observable<User>;
+        .get<User>(`${environment.dataService}/users/current`)
+        .pipe(tap(u => (this.user = u)));
     } else {
       return of(this.user);
     }
