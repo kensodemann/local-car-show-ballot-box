@@ -12,6 +12,11 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: '',
+        redirectTo: '/tabs/(car-shows:car-shows)',
+        pathMatch: 'full'
+      },
+      {
         path: 'car-shows',
         outlet: 'car-shows',
         component: CarShowsPage

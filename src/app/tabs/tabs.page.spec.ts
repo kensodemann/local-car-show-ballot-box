@@ -1,5 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { async, ComponentFixture, fakeAsync, TestBed, tick } from '@angular/core/testing';
+import {
+  async,
+  ComponentFixture,
+  fakeAsync,
+  TestBed,
+  tick
+} from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 
 import { TabsPage } from './tabs.page';
@@ -12,9 +18,9 @@ describe('TabsPage', () => {
 
   beforeEach(() => {
     carShows = jasmine.createSpyObj('CarShowsService', {
-      getCurrent: of()
+      getCurrent: of(null)
     });
-    carShows.currentChanged = new Subject();
+    carShows.changed = new Subject();
 
     TestBed.configureTestingModule({
       declarations: [TabsPage],
@@ -26,7 +32,6 @@ describe('TabsPage', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(TabsPage);
     component = fixture.componentInstance;
-    fixture.detectChanges();
   });
 
   it('exists', () => {
@@ -34,59 +39,60 @@ describe('TabsPage', () => {
   });
 
   describe('on init', () => {
+    it('gets the current car show', () => {
+      fixture.detectChanges();
+      expect(carShows.getCurrent).toHaveBeenCalledTimes(1);
+    });
+
+    it('sets noCurrentShow true if there is no show', () => {
+      carShows.getCurrent.and.returnValue(of({}));
+      fixture.detectChanges();
+      expect(component.noCurrentShow).toEqual(true);
+    });
+
+    it('sets noCurrentShow false if there is a show', () => {
+      carShows.getCurrent.and.returnValue(
+        of({
+          id: 3,
+          name: 'Waukesha Show 2017',
+          date: '2017-08-10',
+          year: 2017,
+          classes: []
+        })
+      );
+      fixture.detectChanges();
+      expect(component.noCurrentShow).toEqual(false);
+    });
+  });
+
+  describe('on car shows changed', () => {
     beforeEach(() => {
+      fixture.detectChanges();
       carShows.getCurrent.calls.reset();
     });
 
     it('gets the current car show', () => {
-      component.ngOnInit();
+      carShows.changed.next();
       expect(carShows.getCurrent).toHaveBeenCalledTimes(1);
     });
-  });
 
-  describe('noCurrentShow', () => {
-    it('is undefined by default', () => {
-      expect(component.noCurrentShow).toBeUndefined();
-    });
-
-    it('is true if there is no current show', () => {
-      carShows.currentChanged.next(null);
+    it('sets noCurrentShow true if there is no show', () => {
+      carShows.getCurrent.and.returnValue(of({}));
+      carShows.changed.next();
       expect(component.noCurrentShow).toEqual(true);
     });
 
-    it('is false if there is current show', () => {
-      carShows.currentChanged.next({
-        id: 3,
-        name: 'Waukesha Show 2017',
-        date: '2017-08-10',
-        year: 2017,
-        classes: [
-          {
-            id: 9,
-            name: 'A',
-            description: 'Antique through 1954, Cars & Trucks',
-            active: true
-          },
-          {
-            id: 10,
-            name: 'B',
-            description: '1955-1962, Cars Only',
-            active: true
-          },
-          {
-            id: 11,
-            name: 'C',
-            description: '1963-1967, Cars Only',
-            active: true
-          },
-          {
-            id: 12,
-            name: 'D',
-            description: '1968-1970, Cars Only',
-            active: true
-          }
-        ]
-      });
+    it('sets noCurrentShow false if there is a show', () => {
+      carShows.getCurrent.and.returnValue(
+        of({
+          id: 3,
+          name: 'Waukesha Show 2017',
+          date: '2017-08-10',
+          year: 2017,
+          classes: []
+        })
+      );
+      carShows.changed.next();
       expect(component.noCurrentShow).toEqual(false);
     });
   });

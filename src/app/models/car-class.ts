@@ -1,5 +1,5 @@
 export class CarClass {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   active: boolean;

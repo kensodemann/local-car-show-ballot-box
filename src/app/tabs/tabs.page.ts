@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CarShow } from '../models/car-show';
 import { CarShowsService } from '../services/car-shows.service';
 
 @Component({
@@ -14,9 +13,13 @@ export class TabsPage implements OnInit {
   constructor(private carShows: CarShowsService) {}
 
   ngOnInit() {
-    this.carShows.getCurrent().subscribe();
-    this.carShows.currentChanged.subscribe(
-      show => (this.noCurrentShow = !show)
-    );
+    this.fetchCurrentShow();
+    this.carShows.changed.subscribe(() => this.fetchCurrentShow());
+  }
+
+  private fetchCurrentShow() {
+    this.carShows
+      .getCurrent()
+      .subscribe(c => (this.noCurrentShow = !(c && c.id)));
   }
 }

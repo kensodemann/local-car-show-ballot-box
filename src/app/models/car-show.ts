@@ -1,7 +1,7 @@
 import { CarClass } from './car-class';
 
 export class CarShow {
-  id: number;
+  id?: number;
   name: string;
   date: string;
   year: number;

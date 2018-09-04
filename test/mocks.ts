@@ -1,16 +1,17 @@
 export function createOverlayElementMock(name: string) {
-  return jasmine.createSpyObj(name, ['present']);
+  return jasmine.createSpyObj(name, ['dismiss', 'present']);
 }
 
 export function createOverlayControllerMock(name: string, element?: any) {
   return jasmine.createSpyObj(name, {
     create: Promise.resolve(element),
-    dismiss: undefined
+    dismiss: undefined,
+    getTop: Promise.resolve(element)
   });
 }
 
 export function createNavControllerMock() {
-  return jasmine.createSpyObj('NavController', ['navigateForward', 'navigateRoot']);
+  return jasmine.createSpyObj('NavController', ['goBack', 'navigateForward', 'navigateRoot']);
 }
 
 export function createIdentityMock() {
