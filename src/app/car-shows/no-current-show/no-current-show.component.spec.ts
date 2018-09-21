@@ -32,8 +32,8 @@ describe('NoCurrentShowComponent', () => {
   describe('clicking "Create Show"', () => {
     it('navigates to the car show setup page', () => {
       component.createShowClicked();
-      expect(navCtrl.goForward).toHaveBeenCalledTimes(1);
-      expect(navCtrl.goForward).toHaveBeenCalledWith('create-new-show');
+      expect(navCtrl.navigateForward).toHaveBeenCalledTimes(1);
+      expect(navCtrl.navigateForward).toHaveBeenCalledWith('create-new-show');
     });
   });
 });

@@ -12,6 +12,6 @@ export class NoCurrentShowComponent implements OnInit {
   ngOnInit() {}
 
   createShowClicked() {
-    this.navCtrl.goForward('create-new-show');
+    this.navCtrl.navigateForward('create-new-show');
   }
 }

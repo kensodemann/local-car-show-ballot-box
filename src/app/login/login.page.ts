@@ -24,7 +24,7 @@ export class LoginPage {
       if (success) {
         this.email = '';
         this.errorMessage = '';
-        this.navCtrl.goRoot('/tabs/(car-shows:car-shows)');
+        this.navCtrl.navigateRoot('/tabs/(car-shows:car-shows)');
       } else {
         this.errorMessage = 'Invalid e-mail address or password';
       }

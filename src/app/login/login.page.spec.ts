@@ -79,8 +79,8 @@ describe('LoginPage', () => {
 
       it('navigates to the main page', () => {
         component.signInClicked();
-        expect(navCtrl.goRoot).toHaveBeenCalledTimes(1);
-        expect(navCtrl.goRoot).toHaveBeenCalledWith('/tabs/(car-shows:car-shows)');
+        expect(navCtrl.navigateRoot).toHaveBeenCalledTimes(1);
+        expect(navCtrl.navigateRoot).toHaveBeenCalledWith('/tabs/(car-shows:car-shows)');
       });
     });
 
@@ -104,7 +104,7 @@ describe('LoginPage', () => {
 
       it('does not navigate', () => {
         component.signInClicked();
-        expect(navCtrl.goRoot).not.toHaveBeenCalled();
+        expect(navCtrl.navigateRoot).not.toHaveBeenCalled();
       });
     });
   });
