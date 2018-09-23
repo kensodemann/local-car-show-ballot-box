@@ -3,9 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { CarClass } from '../models/car-class';
-import { CarShow } from '../models/car-show';
-import { environment } from '../../environments/environment';
+import { CarClass } from '../../models/car-class';
+import { CarShow } from '../../models/car-show';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

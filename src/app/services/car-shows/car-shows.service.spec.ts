@@ -4,10 +4,10 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing';
 
-import { CarClass } from '../models/car-class';
-import { CarShow } from '../models/car-show';
+import { CarClass } from '../../models/car-class';
+import { CarShow } from '../../models/car-show';
 import { CarShowsService } from './car-shows.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 describe('CarShowsService', () => {
   let carShows: CarShowsService;

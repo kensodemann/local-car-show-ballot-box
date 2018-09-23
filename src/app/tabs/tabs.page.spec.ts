@@ -1,31 +1,23 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import {
-  async,
-  ComponentFixture,
-  fakeAsync,
-  TestBed,
-  tick
-} from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 
 import { TabsPage } from './tabs.page';
-import { CarShowsService } from '../services/car-shows.service';
+import { CarShowsService } from '../services/car-shows/car-shows.service';
+import { createCarShowsServiceMock } from '../services/car-shows/car-shows.service.mock';
 
 describe('TabsPage', () => {
   let component: TabsPage;
   let fixture: ComponentFixture<TabsPage>;
-  let carShows;
+  let carShowsServiceMock;
 
   beforeEach(() => {
-    carShows = jasmine.createSpyObj('CarShowsService', {
-      getCurrent: of(null)
-    });
-    carShows.changed = new Subject();
+    carShowsServiceMock = createCarShowsServiceMock();
 
     TestBed.configureTestingModule({
       declarations: [TabsPage],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
-      providers: [{ provide: CarShowsService, useValue: carShows }]
+      providers: [{ provide: CarShowsService, useValue: carShowsServiceMock }]
     }).compileComponents();
   });
 
@@ -41,17 +33,17 @@ describe('TabsPage', () => {
   describe('on init', () => {
     it('gets the current car show', () => {
       fixture.detectChanges();
-      expect(carShows.getCurrent).toHaveBeenCalledTimes(1);
+      expect(carShowsServiceMock.getCurrent).toHaveBeenCalledTimes(1);
     });
 
     it('sets noCurrentShow true if there is no show', () => {
-      carShows.getCurrent.and.returnValue(of({}));
+      carShowsServiceMock.getCurrent.and.returnValue(of({}));
       fixture.detectChanges();
       expect(component.noCurrentShow).toEqual(true);
     });
 
     it('sets noCurrentShow false if there is a show', () => {
-      carShows.getCurrent.and.returnValue(
+      carShowsServiceMock.getCurrent.and.returnValue(
         of({
           id: 3,
           name: 'Waukesha Show 2017',
@@ -68,22 +60,22 @@ describe('TabsPage', () => {
   describe('on car shows changed', () => {
     beforeEach(() => {
       fixture.detectChanges();
-      carShows.getCurrent.calls.reset();
+      carShowsServiceMock.getCurrent.calls.reset();
     });
 
     it('gets the current car show', () => {
-      carShows.changed.next();
-      expect(carShows.getCurrent).toHaveBeenCalledTimes(1);
+      carShowsServiceMock.changed.next();
+      expect(carShowsServiceMock.getCurrent).toHaveBeenCalledTimes(1);
     });
 
     it('sets noCurrentShow true if there is no show', () => {
-      carShows.getCurrent.and.returnValue(of({}));
-      carShows.changed.next();
+      carShowsServiceMock.getCurrent.and.returnValue(of({}));
+      carShowsServiceMock.changed.next();
       expect(component.noCurrentShow).toEqual(true);
     });
 
     it('sets noCurrentShow false if there is a show', () => {
-      carShows.getCurrent.and.returnValue(
+      carShowsServiceMock.getCurrent.and.returnValue(
         of({
           id: 3,
           name: 'Waukesha Show 2017',
@@ -92,7 +84,7 @@ describe('TabsPage', () => {
           classes: []
         })
       );
-      carShows.changed.next();
+      carShowsServiceMock.changed.next();
       expect(component.noCurrentShow).toEqual(false);
     });
   });

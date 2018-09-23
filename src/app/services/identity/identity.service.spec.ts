@@ -5,7 +5,7 @@ import {
 } from '@angular/common/http/testing';
 
 import { IdentityService } from './identity.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 describe('IdentityService', () => {
   let httpTestingController: HttpTestingController;

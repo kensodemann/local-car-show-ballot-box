@@ -1,3 +1,11 @@
+export function createNavControllerMock() {
+  return jasmine.createSpyObj('NavController', [
+    'goBack',
+    'navigateForward',
+    'navigateRoot'
+  ]);
+}
+
 export function createOverlayElementMock(name: string) {
   return jasmine.createSpyObj(name, ['dismiss', 'present']);
 }
@@ -10,15 +18,9 @@ export function createOverlayControllerMock(name: string, element?: any) {
   });
 }
 
-export function createNavControllerMock() {
-  return jasmine.createSpyObj('NavController', ['goBack', 'navigateForward', 'navigateRoot']);
-}
-
-export function createIdentityMock() {
-  return jasmine.createSpyObj('Identity', {
-    get: Promise.resolve(),
-    remove: undefined,
-    set: undefined
+export function createPlatformMock() {
+  return jasmine.createSpyObj('Platform', {
+    ready: Promise.resolve()
   });
 }
 

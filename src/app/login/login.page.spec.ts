@@ -5,27 +5,26 @@ import { IonicModule, NavController } from '@ionic/angular';
 
 import { of } from 'rxjs';
 
-import { AuthenticationService } from '../services/authentication.service';
+import { AuthenticationService } from '../services/authentication/authentication.service';
 import { LoginPage } from './login.page';
+import { createAuthenticationServiceMock } from '../services/authentication/authentication.service.mock';
 import { createNavControllerMock } from '../../../test/mocks';
 
 describe('LoginPage', () => {
-  let auth;
+  let authenticationServiceMock;
   let navCtrl;
 
   let component: LoginPage;
   let fixture: ComponentFixture<LoginPage>;
 
   beforeEach(async(() => {
-    auth = jasmine.createSpyObj('AuthenticationService', {
-      login: of(false)
-    });
+    authenticationServiceMock = createAuthenticationServiceMock();
     navCtrl = createNavControllerMock();
     TestBed.configureTestingModule({
       declarations: [LoginPage],
       imports: [FormsModule, IonicModule],
       providers: [
-        { provide: AuthenticationService, useValue: auth },
+        { provide: AuthenticationService, useValue: authenticationServiceMock },
         { provide: NavController, useValue: navCtrl }
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA]
@@ -45,14 +44,14 @@ describe('LoginPage', () => {
   describe('clicking the "Sign in" button', () => {
     it('performs the login', () => {
       component.signInClicked();
-      expect(auth.login).toHaveBeenCalledTimes(1);
+      expect(authenticationServiceMock.login).toHaveBeenCalledTimes(1);
     });
 
     it('passes the entered e-mail and password', () => {
       component.email = 'jimmy@test.org';
       component.password = 'I Crack the Corn';
       component.signInClicked();
-      expect(auth.login).toHaveBeenCalledWith(
+      expect(authenticationServiceMock.login).toHaveBeenCalledWith(
         'jimmy@test.org',
         'I Crack the Corn'
       );
@@ -60,7 +59,7 @@ describe('LoginPage', () => {
 
     describe('on success', () => {
       beforeEach(() => {
-        auth.login.and.returnValue(of(true));
+        authenticationServiceMock.login.and.returnValue(of(true));
         component.email = 'jimmy@test.org';
         component.password = 'I Crack the Corn';
       });
@@ -86,7 +85,7 @@ describe('LoginPage', () => {
 
     describe('on failure', () => {
       beforeEach(() => {
-        auth.login.and.returnValue(of(false));
+        authenticationServiceMock.login.and.returnValue(of(false));
         component.email = 'jimmy@test.org';
         component.password = 'I Crack the Corn';
       });

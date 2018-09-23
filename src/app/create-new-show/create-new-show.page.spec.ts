@@ -3,10 +3,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 
-import { CarShowsService } from '../services/car-shows.service';
+import { CarShowsService } from '../services/car-shows/car-shows.service';
 import { CreateNewShowPage } from './create-new-show.page';
 import { CarShow } from '../models/car-show';
 
+import { createCarShowsServiceMock } from '../services/car-shows/car-shows.service.mock';
 import {
   createNavControllerMock,
   createOverlayControllerMock,
@@ -55,10 +56,9 @@ describe('CreateNewShowPage', () => {
       ]
     };
 
-    carShowsService = jasmine.createSpyObj('CarShowService', {
-      createCarShow: of(carShow),
-      save: of({ id: 73, ...carShow })
-    });
+    carShowsService = createCarShowsServiceMock();
+    carShowsService.createCarShow.and.returnValue(of(carShow));
+    carShowsService.save.and.returnValue(of({ id: 73, ...carShow }));
 
     loadingSpinner = createOverlayElementMock('LoadingElement');
     loadingController = createOverlayControllerMock(

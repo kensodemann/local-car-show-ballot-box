@@ -4,9 +4,9 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing';
 
-import { CarClass } from '../models/car-class';
+import { CarClass } from '../../models/car-class';
 import { CarClassesService } from './car-classes.service';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 
 describe('CarClassesService', () => {
   let carClasses: CarClassesService;

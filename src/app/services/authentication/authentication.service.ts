@@ -5,9 +5,9 @@ import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
-import { environment } from '../../environments/environment';
-import { IdentityService } from './identity.service';
-import { User } from '../models/user';
+import { environment } from '../../../environments/environment';
+import { IdentityService } from '../identity/identity.service';
+import { User } from '../../models/user';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +40,7 @@ export class AuthenticationService {
       );
   }
 
-  logout() {
+  logout(): Observable<any> {
     this.storage.remove('auth-token');
     this.identity.remove();
     return this.http.post(`${environment.dataService}/logout`, {});

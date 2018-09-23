@@ -7,26 +7,27 @@ import {
 import { Storage } from '@ionic/storage';
 
 import { AuthenticationService } from './authentication.service';
-import { environment } from '../../environments/environment';
-import { IdentityService } from './identity.service';
+import { environment } from '../../../environments/environment';
+import { IdentityService } from '../identity/identity.service';
 
-import { createIdentityMock, createStorageMock } from '../../../test/mocks';
+import { createIdentityServiceMock  } from '../identity/identity.service.mock';
+import { createStorageMock } from '../../../../test/mocks';
 
 describe('AuthenticationService', () => {
   let authentication: AuthenticationService;
   let httpTestingController: HttpTestingController;
 
-  let identityMock;
+  let identityServiceMock;
   let storageMock;
 
   beforeEach(() => {
-    identityMock = createIdentityMock();
+    identityServiceMock = createIdentityServiceMock();
     storageMock = createStorageMock();
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
       providers: [
         AuthenticationService,
-        { provide: IdentityService, useValue: identityMock },
+        { provide: IdentityService, useValue: identityServiceMock },
         { provide: Storage, useValue: storageMock }
       ]
     });
@@ -126,8 +127,8 @@ describe('AuthenticationService', () => {
         );
         req.flush(response);
         httpTestingController.verify();
-        expect(identityMock.set).toHaveBeenCalledTimes(1);
-        expect(identityMock.set).toHaveBeenCalledWith({
+        expect(identityServiceMock.set).toHaveBeenCalledTimes(1);
+        expect(identityServiceMock.set).toHaveBeenCalledWith({
           id: 42,
           firstName: 'Douglas',
           lastName: 'Adams',
@@ -175,7 +176,7 @@ describe('AuthenticationService', () => {
         );
         req.flush(response);
         httpTestingController.verify();
-        expect(identityMock.set).not.toHaveBeenCalled();
+        expect(identityServiceMock.set).not.toHaveBeenCalled();
       });
     });
   });
@@ -203,7 +204,7 @@ describe('AuthenticationService', () => {
       const req = httpTestingController.expectOne(
         `${environment.dataService}/logout`);
       req.flush({});
-      expect(identityMock.remove).toHaveBeenCalledTimes(1);
+      expect(identityServiceMock.remove).toHaveBeenCalledTimes(1);
     });
   });
 });
