@@ -12,7 +12,8 @@ import { testCarClasses } from '../car-classes/car-classes.test-data';
 import { environment } from '../../../environments/environment';
 
 describe('CarShowsService', () => {
-  let carShows: CarShowsService;
+  let carShowsService: CarShowsService;
+  let carShows: Array<CarShow>;
   let carShow: CarShow;
   let httpTestingController: HttpTestingController;
 
@@ -26,24 +27,37 @@ describe('CarShowsService', () => {
   });
 
   beforeEach(inject([CarShowsService], (service: CarShowsService) => {
-    carShows = service;
+    carShowsService = service;
   }));
 
   beforeEach(() => {
+    carShows = [...testCarShows];
     carShow = { ...testCarShows.find(c => c.id === 3) };
   });
 
   it('exists', () => {
-    expect(carShows).toBeTruthy();
+    expect(carShowsService).toBeTruthy();
   });
 
   it('starts with the current car show undefined', () => {
-    expect(carShows.current).toBeUndefined();
+    expect(carShowsService.current).toBeUndefined();
+  });
+
+  describe('get all', () => {
+    it('gets all of the car shows', () => {
+      carShowsService.getAll().subscribe(c => expect(c).toEqual(carShows));
+      const req = httpTestingController.expectOne(
+        `${environment.dataService}/car-shows`
+      );
+      expect(req.request.method).toEqual('GET');
+      req.flush(carShows);
+      httpTestingController.verify();
+    });
   });
 
   describe('get current', () => {
     it('gets the current car show', () => {
-      carShows.getCurrent().subscribe(c => expect(c).toEqual(carShow));
+      carShowsService.getCurrent().subscribe(c => expect(c).toEqual(carShow));
       const req = httpTestingController.expectOne(
         `${environment.dataService}/car-shows/current`
       );
@@ -53,24 +67,24 @@ describe('CarShowsService', () => {
     });
 
     it('sets the current car show', () => {
-      carShows.getCurrent().subscribe();
+      carShowsService.getCurrent().subscribe();
       const req = httpTestingController.expectOne(
         `${environment.dataService}/car-shows/current`
       );
       expect(req.request.method).toEqual('GET');
       req.flush(carShow);
-      expect(carShows.current).toEqual(carShow);
+      expect(carShowsService.current).toEqual(carShow);
     });
 
     it('sets the current undefined if there is no car show', () => {
-      carShows.current = { ...carShow };
-      carShows.getCurrent().subscribe();
+      carShowsService.current = { ...carShow };
+      carShowsService.getCurrent().subscribe();
       const req = httpTestingController.expectOne(
         `${environment.dataService}/car-shows/current`
       );
       expect(req.request.method).toEqual('GET');
       req.flush({});
-      expect(carShows.current).toBeUndefined();
+      expect(carShowsService.current).toBeUndefined();
     });
   });
 
@@ -86,7 +100,7 @@ describe('CarShowsService', () => {
     });
 
     it('sets the date based on the current date', done => {
-      carShows.createCarShow().subscribe(show => {
+      carShowsService.createCarShow().subscribe(show => {
         expect(show.date).toEqual('2017-08-18');
         done();
       });
@@ -97,7 +111,7 @@ describe('CarShowsService', () => {
     });
 
     it('sets the year based on the current year', done => {
-      carShows.createCarShow().subscribe(show => {
+      carShowsService.createCarShow().subscribe(show => {
         expect(show.year).toEqual(2017);
         done();
       });
@@ -108,7 +122,7 @@ describe('CarShowsService', () => {
     });
 
     it('sets the name to a default name', done => {
-      carShows.createCarShow().subscribe(show => {
+      carShowsService.createCarShow().subscribe(show => {
         expect(show.name).toEqual('Annual Car Show - 2017');
         done();
       });
@@ -119,7 +133,7 @@ describe('CarShowsService', () => {
     });
 
     it('queries the classes', () => {
-      carShows.createCarShow().subscribe();
+      carShowsService.createCarShow().subscribe();
       const req = httpTestingController.expectOne(
         `${environment.dataService}/car-classes`
       );
@@ -128,7 +142,7 @@ describe('CarShowsService', () => {
     });
 
     it('sets the classes without ids', done => {
-      carShows.createCarShow().subscribe(show => {
+      carShowsService.createCarShow().subscribe(show => {
         expect(show.classes).toEqual(
           classes.map(c => {
             const cls = { ...c };
@@ -147,7 +161,7 @@ describe('CarShowsService', () => {
     it('ignores the inactive classes', done => {
       classes[1].active = false;
       classes[5].active = false;
-      carShows.createCarShow().subscribe(show => {
+      carShowsService.createCarShow().subscribe(show => {
         expect(show.classes).toEqual(
           classes.filter(c => c.active).map(c => {
             const cls = { ...c };
@@ -167,7 +181,9 @@ describe('CarShowsService', () => {
   describe('save', () => {
     describe('with an ID', () => {
       it('POSTs the car show', () => {
-        carShows.save(carShow).subscribe(c => expect(c).toEqual(carShow));
+        carShowsService
+          .save(carShow)
+          .subscribe(c => expect(c).toEqual(carShow));
         const req = httpTestingController.expectOne(
           `${environment.dataService}/car-shows/${carShow.id}`
         );
@@ -179,8 +195,8 @@ describe('CarShowsService', () => {
 
       it('triggers the changed subject', () => {
         let fired = false;
-        carShows.changed.subscribe(() => (fired = true));
-        carShows.save(carShow).subscribe();
+        carShowsService.changed.subscribe(() => (fired = true));
+        carShowsService.save(carShow).subscribe();
         const req = httpTestingController.expectOne(
           `${environment.dataService}/car-shows/${carShow.id}`
         );
@@ -195,7 +211,7 @@ describe('CarShowsService', () => {
       });
 
       it('POSTs the car show', () => {
-        carShows
+        carShowsService
           .save(carShow)
           .subscribe(c => expect(c).toEqual({ id: 42, ...carShow }));
         const req = httpTestingController.expectOne(
@@ -209,8 +225,8 @@ describe('CarShowsService', () => {
 
       it('triggers the changed subject', () => {
         let fired = false;
-        carShows.changed.subscribe(() => (fired = true));
-        carShows.save(carShow).subscribe();
+        carShowsService.changed.subscribe(() => (fired = true));
+        carShowsService.save(carShow).subscribe();
         const req = httpTestingController.expectOne(
           `${environment.dataService}/car-shows`
         );

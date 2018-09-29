@@ -5,5 +5,10 @@
 </ion-header>
 
 <ion-content padding>
-  <app-no-current-show></app-no-current-show>
+  <app-no-current-show *ngIf="!carShows.current"></app-no-current-show>
+  <ion-list>
+    <ion-item *ngFor="let show of allCarShows">
+      <ion-label>{{show.name}}</ion-label>
+    </ion-item>
+  </ion-list>
 </ion-content>

@@ -18,6 +18,12 @@ export class CarShowsService {
     this.changed = new Subject();
   }
 
+  getAll(): Observable<Array<CarShow>> {
+    return this.http.get<Array<CarShow>>(
+      `${environment.dataService}/car-shows`
+    );
+  }
+
   getCurrent(): Observable<CarShow> {
     return this.http
       .get<CarShow>(`${environment.dataService}/car-shows/current`)
