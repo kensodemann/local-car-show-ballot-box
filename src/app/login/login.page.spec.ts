@@ -5,7 +5,7 @@ import { IonicModule, NavController } from '@ionic/angular';
 
 import { of } from 'rxjs';
 
-import { AuthenticationService, createAuthenticationServiceMock } from '../services/authentication/authentication.service';
+import { AuthenticationService, createAuthenticationServiceMock } from '../services/authentication';
 import { LoginPage } from './login.page';
 import { createNavControllerMock } from '../../../test/mocks';
 

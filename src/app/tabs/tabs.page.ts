@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { CarShowsService } from '../services/car-shows/car-shows.service';
+import { CarShowsService } from '../services/car-shows';
 
 @Component({
   selector: 'app-tabs',

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, NavController } from '@ionic/angular';
 
-import { CarShowsService } from '../services/car-shows/car-shows.service';
+import { CarShowsService } from '../services/car-shows';
 import { CarShow } from '../models/car-show';
 
 @Component({

@@ -32,11 +32,3 @@ export class IdentityService {
     this.user = undefined;
   }
 }
-
-export function createIdentityServiceMock() {
-  return jasmine.createSpyObj('IdentityService', {
-    get: of(null),
-    set: undefined,
-    remove: undefined
-  });
-}

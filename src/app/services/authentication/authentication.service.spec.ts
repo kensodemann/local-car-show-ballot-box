@@ -8,7 +8,7 @@ import { Storage } from '@ionic/storage';
 
 import { AuthenticationService } from './authentication.service';
 import { environment } from '../../../environments/environment';
-import { IdentityService, createIdentityServiceMock } from '../identity/identity.service';
+import { IdentityService, createIdentityServiceMock } from '../identity';
 
 import { createStorageMock } from '../../../../test/mocks';
 

@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 
-import { CarShowsService, createCarShowsServiceMock } from '../services/car-shows/car-shows.service';
+import { CarShowsService, createCarShowsServiceMock } from '../services/car-shows';
 import { CreateNewShowPage } from './create-new-show.page';
 import { CarShow } from '../models/car-show';
 
