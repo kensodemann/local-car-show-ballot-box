@@ -7,9 +7,10 @@ import {
 import { CarClass } from '../../models/car-class';
 import { CarShow } from '../../models/car-show';
 import { CarShowsService } from './car-shows.service';
-import { testCarShows } from './car-shows.test-data';
-import { testCarClasses } from '../car-classes/car-classes.test-data';
+import { deepCopy } from '../../../../test/util';
 import { environment } from '../../../environments/environment';
+import { testCarClasses } from '../car-classes/car-classes.test-data';
+import { testCarShows } from './car-shows.test-data';
 
 describe('CarShowsService', () => {
   let carShowsService: CarShowsService;
@@ -31,8 +32,8 @@ describe('CarShowsService', () => {
   }));
 
   beforeEach(() => {
-    carShows = [...testCarShows];
-    carShow = { ...testCarShows.find(c => c.id === 3) };
+    carShows = deepCopy(testCarShows);
+    carShow = deepCopy(testCarShows.find(c => c.id === 3));
   });
 
   it('exists', () => {
@@ -77,7 +78,7 @@ describe('CarShowsService', () => {
     });
 
     it('sets the current undefined if there is no car show', () => {
-      carShowsService.current = { ...carShow };
+      carShowsService.current = deepCopy(carShow);
       carShowsService.getCurrent().subscribe();
       const req = httpTestingController.expectOne(
         `${environment.dataService}/car-shows/current`
@@ -92,7 +93,7 @@ describe('CarShowsService', () => {
     let classes: Array<CarClass>;
     beforeEach(() => {
       jasmine.clock().mockDate(new Date(2017, 7, 18));
-      classes = [...testCarClasses];
+      classes = deepCopy(testCarClasses);
     });
 
     afterEach(() => {

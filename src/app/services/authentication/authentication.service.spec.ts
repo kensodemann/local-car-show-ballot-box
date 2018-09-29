@@ -182,11 +182,13 @@ describe('AuthenticationService', () => {
 
   describe('logout', () => {
     it('POSTs the logout', () => {
-      authentication.logout().subscribe();
+      let fired = false;
+      authentication.logout().subscribe(() => fired = true);
       const req = httpTestingController.expectOne(
         `${environment.dataService}/logout`);
       req.flush({});
       httpTestingController.verify();
+      expect(fired).toBeTruthy();
     });
 
     it('removes the token from storage', () => {

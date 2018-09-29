@@ -6,8 +6,9 @@ import {
 
 import { CarClass } from '../../models/car-class';
 import { CarClassesService } from './car-classes.service';
-import { testCarClasses } from './car-classes.test-data';
+import { deepCopy } from '../../../../test/util';
 import { environment } from '../../../environments/environment';
+import { testCarClasses } from './car-classes.test-data';
 
 describe('CarClassesService', () => {
   let carClasses: CarClassesService;
@@ -33,7 +34,7 @@ describe('CarClassesService', () => {
   describe('get all', () => {
     let classes: Array<CarClass>;
     beforeEach(() => {
-      classes = [...testCarClasses];
+      classes = deepCopy(testCarClasses);
     });
 
     it('gets all of the car classes', () => {

@@ -3,9 +3,14 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 
-import { CarShowsService, createCarShowsServiceMock, testCarShows } from '../services/car-shows';
+import {
+  CarShowsService,
+  createCarShowsServiceMock,
+  testCarShows
+} from '../services/car-shows';
 import { CreateNewShowPage } from './create-new-show.page';
 import { CarShow } from '../models/car-show';
+import { deepCopy } from '../../../test/util';
 
 import {
   createNavControllerMock,
@@ -23,7 +28,7 @@ describe('CreateNewShowPage', () => {
   let fixture: ComponentFixture<CreateNewShowPage>;
 
   beforeEach(async(() => {
-    carShow = { ...testCarShows.find(c => c.id === 4) };
+    carShow = deepCopy(testCarShows.find(c => c.id === 4));
     delete carShow.id;
 
     carShowsService = createCarShowsServiceMock();

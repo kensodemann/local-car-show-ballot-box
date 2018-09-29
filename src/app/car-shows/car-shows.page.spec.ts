@@ -9,6 +9,7 @@ import {
   testCarShows
 } from '../services/car-shows';
 import { CarShow } from '../models/car-show';
+import { deepCopy } from '../../../test/util';
 
 describe('CarShowsPage', () => {
   let carShowsService;
@@ -17,7 +18,7 @@ describe('CarShowsPage', () => {
   let fixture: ComponentFixture<CarShowsPage>;
 
   beforeEach(async () => {
-    carShows = [...testCarShows];
+    carShows = deepCopy(testCarShows);
     carShowsService = createCarShowsServiceMock();
     carShowsService.getAll.and.returnValue(of(carShows));
     TestBed.configureTestingModule({
