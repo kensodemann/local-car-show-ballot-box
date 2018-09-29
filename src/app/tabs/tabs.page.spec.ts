@@ -3,8 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, Subject } from 'rxjs';
 
 import { TabsPage } from './tabs.page';
-import { CarShowsService } from '../services/car-shows/car-shows.service';
-import { createCarShowsServiceMock } from '../services/car-shows/car-shows.service.mock';
+import { CarShowsService, createCarShowsServiceMock } from '../services/car-shows/car-shows.service';
 
 describe('TabsPage', () => {
   let component: TabsPage;

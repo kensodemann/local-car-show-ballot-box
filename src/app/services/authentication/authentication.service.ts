@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Storage } from '@ionic/storage';
 
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { environment } from '../../../environments/environment';
@@ -45,4 +45,11 @@ export class AuthenticationService {
     this.identity.remove();
     return this.http.post(`${environment.dataService}/logout`, {});
   }
+}
+
+export function createAuthenticationServiceMock() {
+  return jasmine.createSpyObj('AuthenticationService', {
+    login: of(false),
+    logout: of(null)
+  });
 }

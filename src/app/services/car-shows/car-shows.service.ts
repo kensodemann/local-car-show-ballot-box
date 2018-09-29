@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
+import { Observable, of, Subject } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
 
 import { CarClass } from '../../models/car-class';
@@ -54,4 +54,14 @@ export class CarShowsService {
         })
       );
   }
+}
+
+export function createCarShowsServiceMock() {
+  const carShowsServiceMock = jasmine.createSpyObj('CarShowsService', {
+    getCurrent: of(null),
+    save: of(null),
+    createCarShow: of(null)
+  });
+  carShowsServiceMock.changed = new Subject();
+  return carShowsServiceMock;
 }

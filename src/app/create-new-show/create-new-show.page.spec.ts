@@ -3,11 +3,10 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 
-import { CarShowsService } from '../services/car-shows/car-shows.service';
+import { CarShowsService, createCarShowsServiceMock } from '../services/car-shows/car-shows.service';
 import { CreateNewShowPage } from './create-new-show.page';
 import { CarShow } from '../models/car-show';
 
-import { createCarShowsServiceMock } from '../services/car-shows/car-shows.service.mock';
 import {
   createNavControllerMock,
   createOverlayControllerMock,
