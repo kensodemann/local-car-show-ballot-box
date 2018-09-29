@@ -7,6 +7,8 @@ import {
 import { CarClass } from '../../models/car-class';
 import { CarShow } from '../../models/car-show';
 import { CarShowsService } from './car-shows.service';
+import { testCarShows } from './car-shows.test-data';
+import { testCarClasses } from '../car-classes/car-classes.test-data';
 import { environment } from '../../../environments/environment';
 
 describe('CarShowsService', () => {
@@ -28,38 +30,7 @@ describe('CarShowsService', () => {
   }));
 
   beforeEach(() => {
-    carShow = {
-      id: 3,
-      name: 'Waukesha Show 2017',
-      date: '2017-08-10',
-      year: 2017,
-      classes: [
-        {
-          id: 9,
-          name: 'A',
-          description: 'Antique through 1954, Cars & Trucks',
-          active: true
-        },
-        {
-          id: 10,
-          name: 'B',
-          description: '1955-1962, Cars Only',
-          active: true
-        },
-        {
-          id: 11,
-          name: 'C',
-          description: '1963-1967, Cars Only',
-          active: true
-        },
-        {
-          id: 12,
-          name: 'D',
-          description: '1968-1970, Cars Only',
-          active: true
-        }
-      ]
-    };
+    carShow = { ...testCarShows.find(c => c.id === 3) };
   });
 
   it('exists', () => {
@@ -107,32 +78,7 @@ describe('CarShowsService', () => {
     let classes: Array<CarClass>;
     beforeEach(() => {
       jasmine.clock().mockDate(new Date(2017, 7, 18));
-      classes = [
-        {
-          id: 9,
-          name: 'A',
-          description: 'Antique through 1954, Cars & Trucks',
-          active: true
-        },
-        {
-          id: 10,
-          name: 'B',
-          description: '1955-1962, Cars Only',
-          active: true
-        },
-        {
-          id: 11,
-          name: 'C',
-          description: '1963-1967, Cars Only',
-          active: true
-        },
-        {
-          id: 12,
-          name: 'D',
-          description: '1968-1970, Cars Only',
-          active: true
-        }
-      ];
+      classes = [...testCarClasses];
     });
 
     afterEach(() => {
@@ -183,28 +129,13 @@ describe('CarShowsService', () => {
 
     it('sets the classes without ids', done => {
       carShows.createCarShow().subscribe(show => {
-        expect(show.classes).toEqual([
-          {
-            name: 'A',
-            description: 'Antique through 1954, Cars & Trucks',
-            active: true
-          },
-          {
-            name: 'B',
-            description: '1955-1962, Cars Only',
-            active: true
-          },
-          {
-            name: 'C',
-            description: '1963-1967, Cars Only',
-            active: true
-          },
-          {
-            name: 'D',
-            description: '1968-1970, Cars Only',
-            active: true
-          }
-        ]);
+        expect(show.classes).toEqual(
+          classes.map(c => {
+            const cls = { ...c };
+            delete cls.id;
+            return cls;
+          })
+        );
         done();
       });
       const req = httpTestingController.expectOne(
@@ -215,20 +146,15 @@ describe('CarShowsService', () => {
 
     it('ignores the inactive classes', done => {
       classes[1].active = false;
-      classes[2].active = false;
+      classes[5].active = false;
       carShows.createCarShow().subscribe(show => {
-        expect(show.classes).toEqual([
-          {
-            name: 'A',
-            description: 'Antique through 1954, Cars & Trucks',
-            active: true
-          },
-          {
-            name: 'D',
-            description: '1968-1970, Cars Only',
-            active: true
-          }
-        ]);
+        expect(show.classes).toEqual(
+          classes.filter(c => c.active).map(c => {
+            const cls = { ...c };
+            delete cls.id;
+            return cls;
+          })
+        );
         done();
       });
       const req = httpTestingController.expectOne(

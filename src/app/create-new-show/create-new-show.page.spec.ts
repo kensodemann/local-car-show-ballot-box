@@ -3,7 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoadingController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 
-import { CarShowsService, createCarShowsServiceMock } from '../services/car-shows';
+import { CarShowsService, createCarShowsServiceMock, testCarShows } from '../services/car-shows';
 import { CreateNewShowPage } from './create-new-show.page';
 import { CarShow } from '../models/car-show';
 
@@ -23,37 +23,8 @@ describe('CreateNewShowPage', () => {
   let fixture: ComponentFixture<CreateNewShowPage>;
 
   beforeEach(async(() => {
-    carShow = {
-      date: '2017-08-15',
-      name: 'Annual Car Show - 2017',
-      year: 2017,
-      classes: [
-        {
-          id: 9,
-          name: 'A',
-          description: 'Antique through 1954, Cars & Trucks',
-          active: true
-        },
-        {
-          id: 10,
-          name: 'B',
-          description: '1955-1962, Cars Only',
-          active: true
-        },
-        {
-          id: 11,
-          name: 'C',
-          description: '1963-1967, Cars Only',
-          active: true
-        },
-        {
-          id: 12,
-          name: 'D',
-          description: '1968-1970, Cars Only',
-          active: true
-        }
-      ]
-    };
+    carShow = { ...testCarShows.find(c => c.id === 4) };
+    delete carShow.id;
 
     carShowsService = createCarShowsServiceMock();
     carShowsService.createCarShow.and.returnValue(of(carShow));

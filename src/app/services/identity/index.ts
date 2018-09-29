@@ -1,2 +1,3 @@
 export * from './identity.service';
-export * from './identity.service.mock';
+export * from './identity.mock';
+export * from './identity.test-data';
