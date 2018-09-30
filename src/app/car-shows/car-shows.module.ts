@@ -5,6 +5,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CarShowsPage } from './car-shows.page';
 import { NoCurrentShowComponent } from './no-current-show/no-current-show.component';
+import { CurrentCarShowComponent } from './current-car-show/current-car-show.component';
 
 @NgModule({
   imports: [
@@ -15,7 +16,7 @@ import { NoCurrentShowComponent } from './no-current-show/no-current-show.compon
       { path: '', component: CarShowsPage, outlet: 'car-shows' }
     ])
   ],
-  declarations: [CarShowsPage, NoCurrentShowComponent],
+  declarations: [CarShowsPage, NoCurrentShowComponent, CurrentCarShowComponent],
   entryComponents: [NoCurrentShowComponent]
 })
 export class CarShowsPageModule {}
