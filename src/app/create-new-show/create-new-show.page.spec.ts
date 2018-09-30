@@ -116,4 +116,35 @@ describe('CreateNewShowPage', () => {
       expect(loadingSpinner.dismiss).toHaveBeenCalledTimes(1);
     });
   });
+
+  describe('parse date', () => {
+    let eventObject;
+    beforeEach(() => {
+      eventObject = {
+        target: {
+          value: {
+            day: { value: 8 },
+            month: { value: 9 },
+            year: { value: 2018 }
+          }
+        }
+      };
+    });
+
+    it('sets the car show date', () => {
+      component.parseDate(eventObject);
+      expect(component.carShow.date).toEqual('2018-09-08');
+    });
+
+    it('modifies the car show name', () => {
+      component.carShow.name = 'The 2017 Car Show in 2017';
+      component.parseDate(eventObject);
+      expect(component.carShow.name).toEqual('The 2018 Car Show in 2018');
+    });
+
+    it('changes the year', () => {
+      component.parseDate(eventObject);
+      expect(component.carShow.year).toEqual(2018);
+    });
+  });
 });

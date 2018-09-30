@@ -35,4 +35,25 @@ export class CreateNewShowPage implements OnInit {
       this.navController.goBack();
     });
   }
+
+  parseDate(evt: any) {
+    if (typeof evt.target.value === 'object') {
+      const dt = evt.target.value;
+      const yearRegEx = new RegExp(this.carShow.year.toString(), 'g');
+      this.carShow.year = dt.year.value;
+      this.carShow.name = this.carShow.name.replace(
+        yearRegEx,
+        this.pad(dt.year.value, '0000')
+      );
+      this.carShow.date = `${this.pad(dt.year.value, '0000')}-${this.pad(
+        dt.month.value,
+        '00'
+      )}-${this.pad(dt.day.value, '00')}`;
+    }
+  }
+
+  private pad(n: number, mask: string): string {
+    const vstr = n.toString();
+    return mask.substring(0, mask.length - vstr.length) + vstr;
+  }
 }
