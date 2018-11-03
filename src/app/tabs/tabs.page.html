@@ -1,11 +1,26 @@
 <ion-tabs>
-  <ion-tab label="Car Shows" icon="car" href="/tabs/(car-shows:car-shows)">
+  <ion-tab tab="car-shows-view">
     <ion-router-outlet name="car-shows"></ion-router-outlet>
   </ion-tab>
-  <ion-tab label="Ballots" icon="checkbox-outline" href="/tabs/(ballots:ballots)" [disabled]="noCurrentShow">
+  <ion-tab tab="ballots-view">
     <ion-router-outlet name="ballots"></ion-router-outlet>
   </ion-tab>
-  <ion-tab label="Results" icon="list-box" href="/tabs/(results:results)" [disabled]="noCurrentShow">
+  <ion-tab tab="results-view">
     <ion-router-outlet name="results"></ion-router-outlet>
   </ion-tab>
+
+  <ion-tab-bar slot="bottom">
+    <ion-tab-button tab="car-shows-view" href="/tabs/(car-shows:car-shows)">
+      <ion-label>Car Shows</ion-label>
+      <ion-icon name="car"></ion-icon>
+    </ion-tab-button>
+    <ion-tab-button tab="ballots-view" href="/tabs/(ballots:ballots)" [disabled]="noCurrentShow">
+      <ion-label>Ballots</ion-label>
+      <ion-icon name="checkbox-outline"></ion-icon>
+    </ion-tab-button>
+    <ion-tab-button tab="results-view" href="/tabs/(results:results)" [disabled]="noCurrentShow">
+      <ion-label>Results</ion-label>
+      <ion-icon name="list-box"></ion-icon>
+    </ion-tab-button>
+  </ion-tab-bar>
 </ion-tabs>
