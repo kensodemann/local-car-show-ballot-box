@@ -11,7 +11,7 @@
   <ion-list *ngIf="carShow">
     <ion-item>
       <ion-label position="floating">Date</ion-label>
-      <ion-datetime display-format="MM/DD/YYYY" [value]="carShow.date" (ionChange)="parseDate($event)"></ion-datetime>
+      <ion-datetime display-format="MM/DD/YYYY" [(ngModel)]="carShow.date"></ion-datetime>
     </ion-item>
     <ion-item>
       <ion-label position="floating">Name</ion-label>
