@@ -32,6 +32,7 @@ export class CreateNewShowPage implements OnInit {
     loading.present();
     this.carShows.save(this.carShow).subscribe(() => {
       loading.dismiss();
+      this.navController.goBack();
     });
   }
 

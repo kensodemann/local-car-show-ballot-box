@@ -4,6 +4,7 @@
 *~
 *.sw[mnpcod]
 *.log
+*.sql
 *.tmp
 *.tmp.*
 log.txt

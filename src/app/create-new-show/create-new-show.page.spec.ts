@@ -106,6 +106,11 @@ describe('CreateNewShowPage', () => {
       expect(loadingSpinner.present).toHaveBeenCalledTimes(1);
     });
 
+    it('navigates back to the starting page', async () => {
+      await component.createShow();
+      expect(navController.goBack).toHaveBeenCalledTimes(1);
+    });
+
     it('dismisses the loading spinner', async () => {
       await component.createShow();
       expect(loadingSpinner.dismiss).toHaveBeenCalledTimes(1);
@@ -113,8 +118,8 @@ describe('CreateNewShowPage', () => {
   });
 
   describe('close', () => {
-    it('navigates back to the starting page', async () => {
-      await component.close();
+    it('navigates back to the starting page', () => {
+      component.close();
       expect(navController.goBack).toHaveBeenCalledTimes(1);
     });
   });
