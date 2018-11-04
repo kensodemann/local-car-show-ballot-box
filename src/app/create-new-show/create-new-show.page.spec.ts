@@ -100,11 +100,6 @@ describe('CreateNewShowPage', () => {
       expect(carShowsService.save).toHaveBeenCalledWith(carShow);
     });
 
-    it('navigates back to the starting page', async () => {
-      await component.createShow();
-      expect(navController.goBack).toHaveBeenCalledTimes(1);
-    });
-
     it('shows a loading spinner', async () => {
       await component.createShow();
       expect(loadingController.create).toHaveBeenCalledTimes(1);
@@ -114,6 +109,13 @@ describe('CreateNewShowPage', () => {
     it('dismisses the loading spinner', async () => {
       await component.createShow();
       expect(loadingSpinner.dismiss).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('close', () => {
+    it('navigates back to the starting page', async () => {
+      await component.close();
+      expect(navController.goBack).toHaveBeenCalledTimes(1);
     });
   });
 });
