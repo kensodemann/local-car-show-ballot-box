@@ -105,9 +105,7 @@ describe('CarShowsService', () => {
         expect(show.date).toEqual('2017-08-18');
         done();
       });
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-classes`
-      );
+      const req = httpTestingController.expectOne('assets/data/car-classes.json');
       req.flush(classes);
     });
 
@@ -116,9 +114,7 @@ describe('CarShowsService', () => {
         expect(show.year).toEqual(2017);
         done();
       });
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-classes`
-      );
+      const req = httpTestingController.expectOne('assets/data/car-classes.json');
       req.flush(classes);
     });
 
@@ -127,17 +123,13 @@ describe('CarShowsService', () => {
         expect(show.name).toEqual('Annual Car Show - 2017');
         done();
       });
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-classes`
-      );
+      const req = httpTestingController.expectOne('assets/data/car-classes.json');
       req.flush(classes);
     });
 
     it('queries the classes', () => {
       carShowsService.createCarShow().subscribe();
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-classes`
-      );
+      const req = httpTestingController.expectOne('assets/data/car-classes.json');
       expect(req.request.method).toEqual('GET');
       httpTestingController.verify();
     });
@@ -153,9 +145,7 @@ describe('CarShowsService', () => {
         );
         done();
       });
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-classes`
-      );
+      const req = httpTestingController.expectOne('assets/data/car-classes.json');
       req.flush(classes);
     });
 
@@ -164,17 +154,17 @@ describe('CarShowsService', () => {
       classes[5].active = false;
       carShowsService.createCarShow().subscribe(show => {
         expect(show.classes).toEqual(
-          classes.filter(c => c.active).map(c => {
-            const cls = { ...c };
-            delete cls.id;
-            return cls;
-          })
+          classes
+            .filter(c => c.active)
+            .map(c => {
+              const cls = { ...c };
+              delete cls.id;
+              return cls;
+            })
         );
         done();
       });
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-classes`
-      );
+      const req = httpTestingController.expectOne('assets/data/car-classes.json');
       req.flush(classes);
     });
   });

@@ -44,7 +44,7 @@ export class CarShowsService {
     const dateString = date.toISOString().substr(0, 10);
 
     return this.http
-      .get<Array<CarClass>>(`${environment.dataService}/car-classes`)
+      .get<Array<CarClass>>('assets/data/car-classes.json')
       .pipe(
         map(classes => {
           const carShowClasses = classes.filter(cls => cls.active).map(cls => {

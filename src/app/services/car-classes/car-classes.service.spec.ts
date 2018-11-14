@@ -4,10 +4,10 @@ import {
   HttpTestingController
 } from '@angular/common/http/testing';
 
+
 import { CarClass } from '../../models/car-class';
 import { CarClassesService } from './car-classes.service';
 import { deepCopy } from '../../../../test/util';
-import { environment } from '../../../environments/environment';
 import { testCarClasses } from './car-classes.test-data';
 
 describe('CarClassesService', () => {
@@ -17,7 +17,7 @@ describe('CarClassesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [CarClassesService]
+      providers: [ CarClassesService ]
     });
 
     httpTestingController = TestBed.get(HttpTestingController);
@@ -39,7 +39,7 @@ describe('CarClassesService', () => {
 
     it('gets all of the car classes', () => {
       carClasses.getAll().subscribe(c => expect(c).toEqual(testCarClasses));
-      const req = httpTestingController.expectOne(`${environment.dataService}/car-classes`);
+      const req = httpTestingController.expectOne('assets/data/car-classes.json');
       expect(req.request.method).toEqual('GET');
       req.flush(classes);
       httpTestingController.verify();

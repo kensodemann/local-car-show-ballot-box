@@ -20,6 +20,7 @@ export function createOverlayControllerMock(name: string, element?: any) {
 
 export function createPlatformMock() {
   return jasmine.createSpyObj('Platform', {
+    is: false,
     ready: Promise.resolve()
   });
 }
