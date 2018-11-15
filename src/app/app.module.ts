@@ -7,6 +7,7 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { SplashScreen } from '@ionic-native/splash-screen/ngx';
+import { SQLite } from '@ionic-native/sqlite/ngx';
 import { StatusBar } from '@ionic-native/status-bar/ngx';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -23,8 +24,9 @@ import { AppComponent } from './app.component';
     AppRoutingModule
   ],
   providers: [
-    StatusBar,
     SplashScreen,
+    SQLite,
+    StatusBar,
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy }
   ],
   bootstrap: [AppComponent]
