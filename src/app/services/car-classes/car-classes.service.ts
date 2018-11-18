@@ -1,16 +1,31 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
 
 import { CarClass } from '../../models/car-class';
+import { DatabaseService } from '../database/database.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarClassesService {
-  constructor(private http: HttpClient) {}
+  constructor(private database: DatabaseService) {}
 
-  getAll(): Observable<Array<CarClass>> {
-    return this.http.get<Array<CarClass>>('assets/data/car-classes.json');
+  async getAll(): Promise<Array<CarClass>> {
+    const carClasses: Array<CarClass> = [];
+
+    await this.database.ready();
+    await this.database.handle.transaction(tx => {
+      tx.executeSql('SELECT * FROM CarClasses ORDER BY name', [], (t, r) => {
+        for (let idx = 0; idx < r.rows.length; idx++) {
+          const c = r.rows.item(idx);
+          carClasses.push({
+            id: c.id,
+            name: c.name,
+            description: c.description,
+            active: c.active === 1
+          });
+        }
+      });
+    });
+    return carClasses;
   }
 }

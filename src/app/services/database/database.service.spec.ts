@@ -7,6 +7,7 @@ import {
   createSQLiteTransactionMock
 } from '../../../../test/mocks';
 
+import { carClasses } from './car-classes';
 import { DatabaseService } from './database.service';
 
 describe('DatabaseService', () => {
@@ -57,11 +58,6 @@ describe('DatabaseService', () => {
       expect(dbHandle.transaction).toHaveBeenCalledTimes(1);
     });
 
-    it('has created five tables', async () => {
-      await database.ready();
-      expect(transaction.executeSql).toHaveBeenCalledTimes(5);
-    });
-
     it('has created the CarClasses table', async () => {
       await database.ready();
       expect(transaction.executeSql).toHaveBeenCalledWith(
@@ -97,6 +93,19 @@ describe('DatabaseService', () => {
         'CREATE TABLE IF NOT EXISTS CarShowBallotVotes ' +
           '(id INTEGER PRIMARY KEY, carShowBallotRid INTEGER, carShowClassRid INTEGER, carNumber INTEGER)'
       );
+    });
+
+    it('has loaded the CarClasses table', async () => {
+      await database.ready();
+      expect(transaction.executeSql).toHaveBeenCalledWith(
+        'DELETE FROM CarClasses'
+      );
+      carClasses.forEach(cls => {
+        expect(transaction.executeSql).toHaveBeenCalledWith(
+          'INSERT INTO CarClasses VALUES (?, ?, ?, ?)',
+          [cls.id, cls.name, cls.description, cls.active ? 1 : 0]
+        );
+      });
     });
   });
 });

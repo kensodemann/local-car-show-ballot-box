@@ -1,26 +1,26 @@
 import { TestBed, inject } from '@angular/core/testing';
-import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
 
-
-import { CarClass } from '../../models/car-class';
 import { CarClassesService } from './car-classes.service';
-import { deepCopy } from '../../../../test/util';
+import {
+  createDatabaseServiceMock,
+  DatabaseService,
+  MockResultRows
+} from '../database';
 import { testCarClasses } from './car-classes.test-data';
+import { createSQLiteTransactionMock } from '../../../../test/mocks';
 
 describe('CarClassesService', () => {
   let carClasses: CarClassesService;
-  let httpTestingController: HttpTestingController;
+  let database;
 
   beforeEach(() => {
+    database = createDatabaseServiceMock();
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [ CarClassesService ]
+      providers: [
+        CarClassesService,
+        { provide: DatabaseService, useValue: database }
+      ]
     });
-
-    httpTestingController = TestBed.get(HttpTestingController);
   });
 
   beforeEach(inject([CarClassesService], (service: CarClassesService) => {
@@ -32,17 +32,50 @@ describe('CarClassesService', () => {
   });
 
   describe('get all', () => {
-    let classes: Array<CarClass>;
+    let classes: Array<any>;
+    let transaction;
+    let rows;
+
     beforeEach(() => {
-      classes = deepCopy(testCarClasses);
+      classes = testCarClasses.map(c => ({
+        id: c.id,
+        name: c.name,
+        description: c.description,
+        active: c.active ? 1 : 0
+      }));
+
+      rows = new MockResultRows(classes);
+      transaction = createSQLiteTransactionMock();
+      transaction.executeSql.and.callFake((sql, params, fn) => {
+        fn(transaction, { rows });
+      });
+      database.handle.transaction.and.callFake(fn => {
+        fn(transaction);
+        return Promise.resolve();
+      });
     });
 
-    it('gets all of the car classes', () => {
-      carClasses.getAll().subscribe(c => expect(c).toEqual(testCarClasses));
-      const req = httpTestingController.expectOne('assets/data/car-classes.json');
-      expect(req.request.method).toEqual('GET');
-      req.flush(classes);
-      httpTestingController.verify();
+    it('waits for the database to be ready', async () => {
+      await carClasses.getAll();
+      expect(database.ready).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens a transaction', async () => {
+      await carClasses.getAll();
+      expect(database.handle.transaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('queries the CarClasses table', async () => {
+      await carClasses.getAll();
+      expect(transaction.executeSql).toHaveBeenCalledTimes(1);
+      expect(transaction.executeSql.calls.first().args[0]).toEqual(
+        'SELECT * FROM CarClasses ORDER BY name'
+      );
+    });
+
+    it('unpacks the data', async () => {
+      const res = await carClasses.getAll();
+      expect(res).toEqual(testCarClasses);
     });
   });
 });

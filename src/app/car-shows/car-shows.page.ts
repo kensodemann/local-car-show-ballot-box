@@ -1,7 +1,8 @@
 import { Component,  OnInit } from '@angular/core';
 
+import { CarClass } from '../models/car-class';
 import { CarShow } from '../models/car-show';
-import { CarShowsService } from '../services/car-shows/car-shows.service';
+import { CarShowsService } from '../services/car-shows';
 
 @Component({
   selector: 'app-car-shows',
@@ -10,10 +11,11 @@ import { CarShowsService } from '../services/car-shows/car-shows.service';
 })
 export class CarShowsPage implements OnInit {
   allCarShows: Array<CarShow>;
+  allCarClasses: Array<CarClass>;
 
   constructor(public carShows: CarShowsService) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     this.carShows.changed.subscribe(() => this.getAllCarShows());
     this.getAllCarShows();
   }

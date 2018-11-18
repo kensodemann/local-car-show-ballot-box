@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 
+import { carClasses } from './car-classes';
 import { DbTransaction, SQLite, SQLiteObject } from '@ionic-native/sqlite/ngx';
 
 interface Column {
@@ -31,6 +32,7 @@ export class DatabaseService {
     return this.handle
       .transaction(tx => {
         this.createTables(tx);
+        this.loadCarClasses(tx);
       })
       .then(() => {
         this.isReady = true;
@@ -96,5 +98,21 @@ export class DatabaseService {
       cols += `${i ? ', ' : ''}${c.name} ${c.type}`;
     });
     return `CREATE TABLE IF NOT EXISTS ${name} (${cols})`;
+  }
+
+  // TODO: This should be done more inteligently where it only does something if
+  //       the existing car-classes table does not have data. Right now, changing
+  //       the existing car classes is not allowed, so it is not a big deal, but
+  //       that will likely change in the future.
+  private loadCarClasses(transaction: DbTransaction) {
+    transaction.executeSql('DELETE FROM CarClasses');
+    carClasses.forEach(c =>
+      transaction.executeSql('INSERT INTO CarClasses VALUES (?, ?, ?, ?)', [
+        c.id,
+        c.name,
+        c.description,
+        c.active ? 1 : 0
+      ])
+    );
   }
 }

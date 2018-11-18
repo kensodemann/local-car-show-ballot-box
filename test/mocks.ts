@@ -43,7 +43,6 @@ export function createSQLiteTransactionMock() {
   });
 }
 
-
 export function createStorageMock() {
   return jasmine.createSpyObj('Storage', {
     get: Promise.resolve(),
