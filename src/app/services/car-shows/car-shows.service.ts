@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, Subject } from 'rxjs';
-import { map, tap } from 'rxjs/operators';
+import { Subject } from 'rxjs';
 
 import { CarClass } from '../../models/car-class';
 import { CarShow } from '../../models/car-show';
-import { environment } from '../../../environments/environment';
+import { DatabaseService } from '../database';
 
 @Injectable({
   providedIn: 'root'
@@ -14,50 +12,87 @@ export class CarShowsService {
   changed: Subject<void>;
   current: CarShow;
 
-  constructor(private http: HttpClient) {
+  constructor(private database: DatabaseService) {
     this.changed = new Subject();
   }
 
-  getAll(): Observable<Array<CarShow>> {
-    return this.http.get<Array<CarShow>>(
-      `${environment.dataService}/car-shows`
-    );
-  }
-
-  getCurrent(): Observable<CarShow> {
-    return this.http
-      .get<CarShow>(`${environment.dataService}/car-shows/current`)
-      .pipe(tap(c => (this.current = c && c.id ? c : undefined)));
-  }
-
-  save(carShow: CarShow): Observable<CarShow> {
-    const url = `${environment.dataService}/car-shows${
-      carShow.id ? '/' + carShow.id : ''
-    }`;
-    return this.http
-      .post<CarShow>(url, carShow)
-      .pipe(tap(() => this.changed.next()));
-  }
-
-  createCarShow(): Observable<CarShow> {
-    const date = new Date();
-    const dateString = date.toISOString().substr(0, 10);
-
-    return this.http
-      .get<Array<CarClass>>('assets/data/car-classes.json')
-      .pipe(
-        map(classes => {
-          const carShowClasses = classes.filter(cls => cls.active).map(cls => {
-            delete cls.id;
-            return cls;
+  async getAll(): Promise<Array<CarShow>> {
+    const carShows: Array<CarShow> = [];
+    await this.database.ready();
+    await this.database.handle.transaction(tx => {
+      tx.executeSql('SELECT * FROM CarShows ORDER BY year', [], (t, r) => {
+        for (let idx = 0; idx < r.rows.length; idx++) {
+          const show = r.rows.item(idx);
+          carShows.push({
+            id: show.id,
+            name: show.name,
+            date: show.date,
+            year: show.year,
+            classes: []
           });
-          return {
-            date: dateString,
-            name: `Annual Car Show - ${dateString.substr(0, 4)}`,
-            year: date.getFullYear(),
-            classes: carShowClasses
+        }
+      });
+    });
+    return carShows;
+  }
+
+  async getCurrent(): Promise<CarShow> {
+    const year = new Date().getFullYear();
+    await this.database.ready();
+    await this.database.handle.transaction(tx => {
+      tx.executeSql('SELECT * FROM CarShows WHERE year = ?', [year], (t, r) => {
+        if (r.rows.length > 0) {
+          const show = r.rows.item(0);
+          this.current = {
+            id: show.id,
+            name: show.name,
+            date: show.date,
+            year: show.year
           };
-        })
+        } else {
+          this.current = undefined;
+        }
+      });
+    });
+    return this.current;
+  }
+
+  async save(carShow: CarShow): Promise<CarShow> {
+    await this.database.ready();
+    if (carShow.id) {
+      return this.updateExistingShow(carShow);
+    } else {
+      return this.saveNewShow(carShow);
+    }
+  }
+
+  private async saveNewShow(carShow: CarShow): Promise<CarShow> {
+    const show: CarShow = { ...carShow };
+    this.database.handle.transaction(tx => {
+      tx.executeSql(
+        'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarShows',
+        [],
+        (t, r) => {
+          show.id = r.rows.item(0).newId;
+        }
       );
+      tx.executeSql(
+        'INSERT INTO CarShows (id, name, date, year) VALUES (?, ?, ?, ?)',
+        [show.id, show.name, show.date, show.year],
+        (t, r) => {}
+      );
+    });
+    return show;
+  }
+
+  private async updateExistingShow(carShow: CarShow): Promise<CarShow> {
+    this.database.handle.transaction(tx => {
+      tx.executeSql(
+        'UPDATE CarShows SET name = ?, date = ?, year = ? WHERE id = ?',
+        [carShow.name, carShow.date, carShow.year, carShow.id],
+        (t, r) => {}
+      );
+    });
+    return carShow;
   }
 }

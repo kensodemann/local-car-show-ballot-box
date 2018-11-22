@@ -1,12 +1,11 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { of } from 'rxjs';
 
 import { CarShowsPage } from './car-shows.page';
 import {
   CarShowsService,
   createCarShowsServiceMock,
-  testCarShows
+  testCarShowsOld
 } from '../services/car-shows';
 import { CarShow } from '../models/car-show';
 import { deepCopy } from '../../../test/util';
@@ -16,11 +15,13 @@ describe('CarShowsPage', () => {
   let component: CarShowsPage;
   let carShows: Array<CarShow>;
   let fixture: ComponentFixture<CarShowsPage>;
+  let getAllPromise: Promise<Array<CarShow>>;
 
   beforeEach(async () => {
-    carShows = deepCopy(testCarShows);
+    carShows = deepCopy(testCarShowsOld);
     carShowsService = createCarShowsServiceMock();
-    carShowsService.getAll.and.returnValue(of(carShows));
+    getAllPromise = Promise.resolve(carShows);
+    carShowsService.getAll.and.returnValue(getAllPromise);
     TestBed.configureTestingModule({
       declarations: [CarShowsPage],
       providers: [{ provide: CarShowsService, useValue: carShowsService }],
@@ -43,8 +44,9 @@ describe('CarShowsPage', () => {
       expect(carShowsService.getAll).toHaveBeenCalledTimes(1);
     });
 
-    it('assigns the returned shows', () => {
-      expect(component.allCarShows).toEqual(testCarShows);
+    it('assigns the returned shows', async () => {
+      await getAllPromise;
+      expect(component.allCarShows).toEqual(testCarShowsOld);
     });
   });
 
@@ -59,9 +61,10 @@ describe('CarShowsPage', () => {
       expect(carShowsService.getAll).toHaveBeenCalledTimes(1);
     });
 
-    it('assigns the returned shows', () => {
+    it('assigns the returned shows', async () => {
       carShowsService.changed.next();
-      expect(component.allCarShows).toEqual(testCarShows);
+      await getAllPromise;
+      expect(component.allCarShows).toEqual(testCarShowsOld);
     });
   });
 });

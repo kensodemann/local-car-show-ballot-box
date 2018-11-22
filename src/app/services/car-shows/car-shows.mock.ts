@@ -1,11 +1,10 @@
-import { of, Subject } from 'rxjs';
+import { Subject } from 'rxjs';
 
 export function createCarShowsServiceMock() {
   const carShowsServiceMock = jasmine.createSpyObj('CarShowsService', {
-    getAll: of([]),
-    getCurrent: of(null),
-    save: of(null),
-    createCarShow: of(null)
+    getAll: Promise.resolve([]),
+    getCurrent: Promise.resolve(),
+    save: Promise.resolve()
   });
   carShowsServiceMock.changed = new Subject();
   return carShowsServiceMock;

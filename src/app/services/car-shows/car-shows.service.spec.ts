@@ -1,40 +1,32 @@
 import { inject, TestBed } from '@angular/core/testing';
-import {
-  HttpClientTestingModule,
-  HttpTestingController
-} from '@angular/common/http/testing';
 
-import { CarClass } from '../../models/car-class';
 import { CarShow } from '../../models/car-show';
 import { CarShowsService } from './car-shows.service';
-import { deepCopy } from '../../../../test/util';
-import { environment } from '../../../environments/environment';
-import { testCarClasses } from '../car-classes/car-classes.test-data';
 import { testCarShows } from './car-shows.test-data';
+import {
+  createDatabaseServiceMock,
+  DatabaseService,
+  MockResultRows
+} from '../database';
+import { createSQLiteTransactionMock } from '../../../../test/mocks';
 
 describe('CarShowsService', () => {
   let carShowsService: CarShowsService;
-  let carShows: Array<CarShow>;
-  let carShow: CarShow;
-  let httpTestingController: HttpTestingController;
+  let database;
 
   beforeEach(() => {
+    database = createDatabaseServiceMock();
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [CarShowsService]
+      providers: [
+        CarShowsService,
+        { provide: DatabaseService, useValue: database }
+      ]
     });
-
-    httpTestingController = TestBed.get(HttpTestingController);
   });
 
   beforeEach(inject([CarShowsService], (service: CarShowsService) => {
     carShowsService = service;
   }));
-
-  beforeEach(() => {
-    carShows = deepCopy(testCarShows);
-    carShow = deepCopy(testCarShows.find(c => c.id === 3));
-  });
 
   it('exists', () => {
     expect(carShowsService).toBeTruthy();
@@ -45,184 +37,225 @@ describe('CarShowsService', () => {
   });
 
   describe('get all', () => {
-    it('gets all of the car shows', () => {
-      carShowsService.getAll().subscribe(c => expect(c).toEqual(carShows));
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-shows`
+    let transaction;
+    let rows;
+
+    beforeEach(() => {
+      const carShows = testCarShows.map(s => ({
+        id: s.id,
+        name: s.name,
+        date: s.date,
+        year: s.year
+      }));
+
+      rows = new MockResultRows(carShows);
+      transaction = createSQLiteTransactionMock();
+      transaction.executeSql.and.callFake((sql, params, fn) => {
+        fn(transaction, { rows });
+      });
+      database.handle.transaction.and.callFake(fn => {
+        fn(transaction);
+        return Promise.resolve();
+      });
+    });
+
+    it('waits for the database to be ready', async () => {
+      await carShowsService.getAll();
+      expect(database.ready).toHaveBeenCalledTimes(1);
+    });
+
+    it('opens a transaction', async () => {
+      await carShowsService.getAll();
+      expect(database.handle.transaction).toHaveBeenCalledTimes(1);
+    });
+
+    it('queries the CarClasses table', async () => {
+      await carShowsService.getAll();
+      expect(transaction.executeSql).toHaveBeenCalledTimes(1);
+      expect(transaction.executeSql.calls.first().args[0]).toEqual(
+        'SELECT * FROM CarShows ORDER BY year'
       );
-      expect(req.request.method).toEqual('GET');
-      req.flush(carShows);
-      httpTestingController.verify();
+    });
+
+    it('unpacks the data', async () => {
+      const res = await carShowsService.getAll();
+      expect(res).toEqual(testCarShows);
     });
   });
 
   describe('get current', () => {
-    it('gets the current car show', () => {
-      carShowsService.getCurrent().subscribe(c => expect(c).toEqual(carShow));
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-shows/current`
-      );
-      expect(req.request.method).toEqual('GET');
-      req.flush(carShow);
-      httpTestingController.verify();
-    });
+    let rows;
+    let transaction;
 
-    it('sets the current car show', () => {
-      carShowsService.getCurrent().subscribe();
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-shows/current`
-      );
-      expect(req.request.method).toEqual('GET');
-      req.flush(carShow);
-      expect(carShowsService.current).toEqual(carShow);
-    });
-
-    it('sets the current undefined if there is no car show', () => {
-      carShowsService.current = deepCopy(carShow);
-      carShowsService.getCurrent().subscribe();
-      const req = httpTestingController.expectOne(
-        `${environment.dataService}/car-shows/current`
-      );
-      expect(req.request.method).toEqual('GET');
-      req.flush({});
-      expect(carShowsService.current).toBeUndefined();
-    });
-  });
-
-  describe('create car show', () => {
-    let classes: Array<CarClass>;
     beforeEach(() => {
-      jasmine.clock().mockDate(new Date(2017, 7, 18));
-      classes = deepCopy(testCarClasses);
+      jasmine.clock().mockDate(new Date(2016, 8, 23));
+      const carShow = {
+        id: testCarShows[2].id,
+        name: testCarShows[2].name,
+        date: testCarShows[2].date,
+        year: testCarShows[2].year
+      };
+
+      rows = new MockResultRows([carShow]);
+      transaction = createSQLiteTransactionMock();
+      transaction.executeSql.and.callFake((sql, params, fn) => {
+        fn(transaction, { rows });
+      });
+      database.handle.transaction.and.callFake(fn => {
+        fn(transaction);
+        return Promise.resolve();
+      });
     });
 
     afterEach(() => {
       jasmine.clock().uninstall();
     });
 
-    it('sets the date based on the current date', done => {
-      carShowsService.createCarShow().subscribe(show => {
-        expect(show.date).toEqual('2017-08-18');
-        done();
-      });
-      const req = httpTestingController.expectOne('assets/data/car-classes.json');
-      req.flush(classes);
+    it('waits for the database to be ready', async () => {
+      await carShowsService.getCurrent();
+      expect(database.ready).toHaveBeenCalledTimes(1);
     });
 
-    it('sets the year based on the current year', done => {
-      carShowsService.createCarShow().subscribe(show => {
-        expect(show.year).toEqual(2017);
-        done();
-      });
-      const req = httpTestingController.expectOne('assets/data/car-classes.json');
-      req.flush(classes);
+    it('opens a transaction', async () => {
+      await carShowsService.getCurrent();
+      expect(database.handle.transaction).toHaveBeenCalledTimes(1);
     });
 
-    it('sets the name to a default name', done => {
-      carShowsService.createCarShow().subscribe(show => {
-        expect(show.name).toEqual('Annual Car Show - 2017');
-        done();
-      });
-      const req = httpTestingController.expectOne('assets/data/car-classes.json');
-      req.flush(classes);
+    it('queries the CarShows table', async () => {
+      await carShowsService.getCurrent();
+      expect(transaction.executeSql).toHaveBeenCalledTimes(1);
+      expect(transaction.executeSql.calls.argsFor(0)[0]).toEqual(
+        'SELECT * FROM CarShows WHERE year = ?'
+      );
     });
 
-    it('queries the classes', () => {
-      carShowsService.createCarShow().subscribe();
-      const req = httpTestingController.expectOne('assets/data/car-classes.json');
-      expect(req.request.method).toEqual('GET');
-      httpTestingController.verify();
+    it('queries based on the current year', async () => {
+      await carShowsService.getCurrent();
+      expect(transaction.executeSql.calls.argsFor(0)[1]).toEqual([2016]);
     });
 
-    it('sets the classes without ids', done => {
-      carShowsService.createCarShow().subscribe(show => {
-        expect(show.classes).toEqual(
-          classes.map(c => {
-            const cls = { ...c };
-            delete cls.id;
-            return cls;
-          })
-        );
-        done();
+    it('resolves the full car show data', async () => {
+      const show = await carShowsService.getCurrent();
+      expect(show).toEqual({
+        id: testCarShows[2].id,
+        name: testCarShows[2].name,
+        date: testCarShows[2].date,
+        year: testCarShows[2].year
       });
-      const req = httpTestingController.expectOne('assets/data/car-classes.json');
-      req.flush(classes);
     });
 
-    it('ignores the inactive classes', done => {
-      classes[1].active = false;
-      classes[5].active = false;
-      carShowsService.createCarShow().subscribe(show => {
-        expect(show.classes).toEqual(
-          classes
-            .filter(c => c.active)
-            .map(c => {
-              const cls = { ...c };
-              delete cls.id;
-              return cls;
-            })
-        );
-        done();
+    it('sets current to the car show', async () => {
+      await carShowsService.getCurrent();
+      expect(carShowsService.current).toEqual({
+        id: testCarShows[2].id,
+        name: testCarShows[2].name,
+        date: testCarShows[2].date,
+        year: testCarShows[2].year
       });
-      const req = httpTestingController.expectOne('assets/data/car-classes.json');
-      req.flush(classes);
     });
   });
 
   describe('save', () => {
+    let testShow: CarShow;
     describe('with an ID', () => {
-      it('POSTs the car show', () => {
-        carShowsService
-          .save(carShow)
-          .subscribe(c => expect(c).toEqual(carShow));
-        const req = httpTestingController.expectOne(
-          `${environment.dataService}/car-shows/${carShow.id}`
-        );
-        expect(req.request.method).toEqual('POST');
-        expect(req.request.body).toEqual(carShow);
-        req.flush(carShow);
-        httpTestingController.verify();
+      let transaction;
+      beforeEach(() => {
+        testShow = {
+          id: 7,
+          name: 'Luckyj number 7 show',
+          date: '2019-07-07',
+          year: 2019
+        };
+        transaction = createSQLiteTransactionMock();
+        transaction.executeSql.and.callFake((sql, params, fn) => {
+          fn(transaction, { rows: [] });
+        });
+        database.handle.transaction.and.callFake(fn => {
+          fn(transaction);
+          return Promise.resolve();
+        });
       });
 
-      it('triggers the changed subject', () => {
-        let fired = false;
-        carShowsService.changed.subscribe(() => (fired = true));
-        carShowsService.save(carShow).subscribe();
-        const req = httpTestingController.expectOne(
-          `${environment.dataService}/car-shows/${carShow.id}`
+      it('waits for the database to be ready', async () => {
+        await carShowsService.save(testShow);
+        expect(database.ready).toHaveBeenCalledTimes(1);
+      });
+
+      it('opens a transaction', async () => {
+        await carShowsService.save(testShow);
+        expect(database.handle.transaction).toHaveBeenCalledTimes(1);
+      });
+
+      it('updates the car show', async () => {
+        await carShowsService.save(testShow);
+        expect(transaction.executeSql).toHaveBeenCalledTimes(1);
+        expect(transaction.executeSql.calls.argsFor(0)[0]).toEqual(
+          'UPDATE CarShows SET name = ?, date = ?, year = ? WHERE id = ?'
         );
-        req.flush(carShow);
-        expect(fired).toEqual(true);
+        expect(transaction.executeSql.calls.argsFor(0)[1]).toEqual([
+          testShow.name,
+          testShow.date,
+          testShow.year,
+          testShow.id
+        ]);
+      });
+
+      it('resolves the car show', async () => {
+        const show = await carShowsService.save(testShow);
+        expect(show).toEqual(testShow);
       });
     });
 
     describe('without an ID', () => {
+      let transaction;
       beforeEach(() => {
-        delete carShow.id;
+        testShow = {
+          name: 'Some new show',
+          date: '2019-07-07',
+          year: 2019
+        };
+        const rows = new MockResultRows([{ newId: 4 }]);
+        transaction = createSQLiteTransactionMock();
+        transaction.executeSql.and.callFake((sql, params, fn) => {
+          const select = /SELECT/.test(sql);
+          fn(transaction, { rows: select ? rows : [] });
+        });
+        database.handle.transaction.and.callFake(fn => {
+          fn(transaction);
+          return Promise.resolve();
+        });
       });
 
-      it('POSTs the car show', () => {
-        carShowsService
-          .save(carShow)
-          .subscribe(c => expect(c).toEqual({ id: 42, ...carShow }));
-        const req = httpTestingController.expectOne(
-          `${environment.dataService}/car-shows`
-        );
-        expect(req.request.method).toEqual('POST');
-        expect(req.request.body).toEqual(carShow);
-        req.flush({ id: 42, ...carShow });
-        httpTestingController.verify();
+      it('waits for the database to be ready', async () => {
+        await carShowsService.save(testShow);
+        expect(database.ready).toHaveBeenCalledTimes(1);
       });
 
-      it('triggers the changed subject', () => {
-        let fired = false;
-        carShowsService.changed.subscribe(() => (fired = true));
-        carShowsService.save(carShow).subscribe();
-        const req = httpTestingController.expectOne(
-          `${environment.dataService}/car-shows`
+      it('opens a transaction', async () => {
+        await carShowsService.save(testShow);
+        expect(database.handle.transaction).toHaveBeenCalledTimes(1);
+      });
+
+      it('selects the maximum used car show id and inserts the car show', async () => {
+        await carShowsService.save(testShow);
+        expect(transaction.executeSql).toHaveBeenCalledTimes(2);
+        expect(transaction.executeSql.calls.argsFor(0)[0]).toEqual(
+          'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarShows'
         );
-        req.flush({ id: 42, ...carShow });
-        expect(fired).toEqual(true);
+        expect(transaction.executeSql.calls.argsFor(1)[0]).toEqual(
+          'INSERT INTO CarShows (id, name, date, year) VALUES (?, ?, ?, ?)'
+        );
+        expect(transaction.executeSql.calls.argsFor(1)[1]).toEqual([
+          4,
+          testShow.name,
+          testShow.date,
+          testShow.year
+        ]);
+      });
+
+      it('resolves the newly saved show', async () => {
+        const show =  await carShowsService.save(testShow);
+        expect(show).toEqual({ id: 4, ...testShow });
       });
     });
   });

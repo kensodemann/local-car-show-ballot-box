@@ -20,7 +20,7 @@ export class CarShowsPage implements OnInit {
     this.getAllCarShows();
   }
 
-  private getAllCarShows() {
-    this.carShows.getAll().subscribe(c => (this.allCarShows = c));
+  private async getAllCarShows() {
+    this.allCarShows = await this.carShows.getAll();
   }
 }

@@ -19,21 +19,21 @@ export class CreateNewShowPage implements OnInit {
   ) {}
 
   async ngOnInit() {
-    const loading = await this.loadingController.create();
-    loading.present();
-    this.carShows.createCarShow().subscribe(c => {
-      this.carShow = c;
-      loading.dismiss();
-    });
+    // const loading = await this.loadingController.create();
+    // loading.present();
+    // this.carShows.createCarShow().subscribe(c => {
+    //   this.carShow = c;
+    //   loading.dismiss();
+    // });
   }
 
   async createShow() {
-    const loading = await this.loadingController.create();
-    loading.present();
-    this.carShows.save(this.carShow).subscribe(() => {
-      loading.dismiss();
-      this.navController.goBack();
-    });
+    // const loading = await this.loadingController.create();
+    // loading.present();
+    // this.carShows.save(this.carShow).subscribe(() => {
+    //   loading.dismiss();
+    //   this.navController.goBack();
+    // });
   }
 
   close() {

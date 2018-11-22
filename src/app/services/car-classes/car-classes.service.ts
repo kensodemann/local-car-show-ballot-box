@@ -9,10 +9,14 @@ import { DatabaseService } from '../database/database.service';
 export class CarClassesService {
   constructor(private database: DatabaseService) {}
 
+  // TODO: add an optional carShowId param and grab CarShowClasses for it when provided
   async getAll(): Promise<Array<CarClass>> {
-    const carClasses: Array<CarClass> = [];
-
     await this.database.ready();
+    return this.getCarClasses();
+  }
+
+  async getCarClasses(): Promise<Array<CarClass>> {
+    const carClasses: Array<CarClass> = [];
     await this.database.handle.transaction(tx => {
       tx.executeSql('SELECT * FROM CarClasses ORDER BY name', [], (t, r) => {
         for (let idx = 0; idx < r.rows.length; idx++) {

@@ -24,9 +24,8 @@ export class TabsPage implements OnInit {
   private async fetchCurrentShow() {
     const loading = await this.loadingController.create();
     await loading.present();
-    this.carShows.getCurrent().subscribe(c => {
-      this.noCurrentShow = !(c && c.id);
-      loading.dismiss();
-    });
+    const show = await this.carShows.getCurrent();
+    this.noCurrentShow = !(show && show.id);
+    loading.dismiss();
   }
 }

@@ -60,7 +60,7 @@ describe('TabsPage', () => {
     }));
 
     it('sets noCurrentShow true if there is no show', fakeAsync(() => {
-      carShowsServiceMock.getCurrent.and.returnValue(of({}));
+      carShowsServiceMock.getCurrent.and.returnValue(Promise.resolve({}));
       fixture.detectChanges();
       tick();
       expect(component.noCurrentShow).toEqual(true);
@@ -68,7 +68,7 @@ describe('TabsPage', () => {
 
     it('sets noCurrentShow false if there is a show', fakeAsync(() => {
       carShowsServiceMock.getCurrent.and.returnValue(
-        of({
+        Promise.resolve({
           id: 3,
           name: 'Waukesha Show 2017',
           date: '2017-08-10',
@@ -111,7 +111,7 @@ describe('TabsPage', () => {
     }));
 
     it('sets noCurrentShow true if there is no show', fakeAsync(() => {
-      carShowsServiceMock.getCurrent.and.returnValue(of({}));
+      carShowsServiceMock.getCurrent.and.returnValue(Promise.resolve({}));
       carShowsServiceMock.changed.next();
       tick();
       expect(component.noCurrentShow).toEqual(true);
@@ -119,7 +119,7 @@ describe('TabsPage', () => {
 
     it('sets noCurrentShow false if there is a show', fakeAsync(() => {
       carShowsServiceMock.getCurrent.and.returnValue(
-        of({
+        Promise.resolve({
           id: 3,
           name: 'Waukesha Show 2017',
           date: '2017-08-10',

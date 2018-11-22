@@ -5,5 +5,5 @@ export class CarShow {
   name: string;
   date: string;
   year: number;
-  classes: Array<CarClass>;
+  classes?: Array<CarClass>; // TODO: Deprecated. Remove.
 }

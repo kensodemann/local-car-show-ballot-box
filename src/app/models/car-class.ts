@@ -3,4 +3,5 @@ export class CarClass {
   name: string;
   description: string;
   active: boolean;
+  carShowRid?: number;
 }
