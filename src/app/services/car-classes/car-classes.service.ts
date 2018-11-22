@@ -9,10 +9,9 @@ import { DatabaseService } from '../database/database.service';
 export class CarClassesService {
   constructor(private database: DatabaseService) {}
 
-  // TODO: add an optional carShowId param and grab CarShowClasses for it when provided
-  async getAll(): Promise<Array<CarClass>> {
+  async getAll(carShowId?: number): Promise<Array<CarClass>> {
     await this.database.ready();
-    return this.getCarClasses();
+    return carShowId ? this.getCarShowClasses(carShowId) : this.getCarClasses();
   }
 
   async getCarClasses(): Promise<Array<CarClass>> {
@@ -29,6 +28,29 @@ export class CarClassesService {
           });
         }
       });
+    });
+    return carClasses;
+  }
+
+  async getCarShowClasses(carShowId: number): Promise<Array<CarClass>> {
+    const carClasses: Array<CarClass> = [];
+    await this.database.handle.transaction(tx => {
+      tx.executeSql(
+        'SELECT * FROM CarShowClasses WHERE carShowRid = ? ORDER BY name',
+        [carShowId],
+        (t, r) => {
+          for (let idx = 0; idx < r.rows.length; idx++) {
+            const c = r.rows.item(idx);
+            carClasses.push({
+              id: c.id,
+              name: c.name,
+              description: c.description,
+              active: c.active === 1,
+              carShowRid: c.carShowRid
+            });
+          }
+        }
+      );
     });
     return carClasses;
   }
