@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-import { CarClass } from '../../models/car-class';
 import { CarShow } from '../../models/car-show';
 import { DatabaseService } from '../database';
 
@@ -68,7 +67,7 @@ export class CarShowsService {
 
   private async saveNewShow(carShow: CarShow): Promise<CarShow> {
     const show: CarShow = { ...carShow };
-    this.database.handle.transaction(tx => {
+    await this.database.handle.transaction(tx => {
       tx.executeSql(
         'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarShows',
         [],
@@ -82,17 +81,19 @@ export class CarShowsService {
         (t, r) => {}
       );
     });
+    this.changed.next();
     return show;
   }
 
   private async updateExistingShow(carShow: CarShow): Promise<CarShow> {
-    this.database.handle.transaction(tx => {
+    await this.database.handle.transaction(tx => {
       tx.executeSql(
         'UPDATE CarShows SET name = ?, date = ?, year = ? WHERE id = ?',
         [carShow.name, carShow.date, carShow.year, carShow.id],
         (t, r) => {}
       );
     });
+    this.changed.next();
     return carShow;
   }
 }

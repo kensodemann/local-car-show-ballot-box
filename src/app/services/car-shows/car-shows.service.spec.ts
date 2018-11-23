@@ -204,6 +204,13 @@ describe('CarShowsService', () => {
         const show = await carShowsService.save(testShow);
         expect(show).toEqual(testShow);
       });
+
+      it('triggers the changed subject', async () => {
+        let changed = false;
+        carShowsService.changed.subscribe(() => (changed = true));
+        await carShowsService.save(testShow);
+        expect(changed).toEqual(true);
+      });
     });
 
     describe('without an ID', () => {
@@ -254,8 +261,15 @@ describe('CarShowsService', () => {
       });
 
       it('resolves the newly saved show', async () => {
-        const show =  await carShowsService.save(testShow);
+        const show = await carShowsService.save(testShow);
         expect(show).toEqual({ id: 4, ...testShow });
+      });
+
+      it('triggers the changed subject', async () => {
+        let changed = false;
+        carShowsService.changed.subscribe(() => (changed = true));
+        await carShowsService.save(testShow);
+        expect(changed).toEqual(true);
       });
     });
   });
