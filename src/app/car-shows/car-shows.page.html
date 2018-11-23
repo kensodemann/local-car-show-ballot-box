@@ -7,12 +7,12 @@
 <ion-content padding>
   <app-no-current-show *ngIf="!carShows.current"></app-no-current-show>
   <app-current-car-show [carShow]="carShows.current" *ngIf="carShows.current"></app-current-car-show>
-  <ion-list *ngIf="allCarClasses?.length">
+  <ion-list *ngIf="allCarShows?.length">
     <ion-list-header>
       <ion-label>All Car Shows</ion-label>
     </ion-list-header>
-    <ion-item *ngFor="let show of allCarClasses">
-      <ion-label>{{show.name}} {{show.description}}</ion-label>
+    <ion-item *ngFor="let show of allCarShows">
+      <ion-label>{{show.name}}</ion-label>
     </ion-item>
   </ion-list>
 </ion-content>

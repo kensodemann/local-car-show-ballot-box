@@ -4,13 +4,15 @@ import { LoadingController, NavController } from '@ionic/angular';
 import { of } from 'rxjs';
 
 import {
+  CarClassesService,
+  createCarClassesServiceMock,
+  testCarClasses
+} from '../services/car-classes';
+import {
   CarShowsService,
-  createCarShowsServiceMock,
-  testCarShowsOld
+  createCarShowsServiceMock
 } from '../services/car-shows';
 import { CreateNewShowPage } from './create-new-show.page';
-import { CarShow } from '../models/car-show';
-import { deepCopy } from '../../../test/util';
 
 import {
   createNavControllerMock,
@@ -19,21 +21,18 @@ import {
 } from '../../../test/mocks';
 
 describe('CreateNewShowPage', () => {
+  let carClassesService;
   let carShowsService;
   let loadingController;
   let loadingSpinner;
   let navController;
-  let carShow: CarShow;
   let component: CreateNewShowPage;
   let fixture: ComponentFixture<CreateNewShowPage>;
 
   beforeEach(async(() => {
-    carShow = deepCopy(testCarShowsOld.find(c => c.id === 4));
-    delete carShow.id;
-
+    carClassesService = createCarClassesServiceMock();
+    carClassesService.getAll.and.returnValue(Promise.resolve(testCarClasses));
     carShowsService = createCarShowsServiceMock();
-    // carShowsService.createCarShow.and.returnValue(of(carShow));
-    carShowsService.save.and.returnValue(of({ id: 73, ...carShow }));
 
     loadingSpinner = createOverlayElementMock('LoadingElement');
     loadingController = createOverlayControllerMock(
@@ -45,6 +44,7 @@ describe('CreateNewShowPage', () => {
     TestBed.configureTestingModule({
       declarations: [CreateNewShowPage],
       providers: [
+        { provide: CarClassesService, useValue: carClassesService },
         { provide: CarShowsService, useValue: carShowsService },
         { provide: LoadingController, useValue: loadingController },
         { provide: NavController, useValue: navController }
@@ -69,52 +69,88 @@ describe('CreateNewShowPage', () => {
   });
 
   describe('initialization', () => {
-    // it('creates a new car show', () => {
-    //   expect(carShowsService.createCarShow).toHaveBeenCalledTimes(1);
-    // });
+    it('shows a loading spinner', () => {
+      expect(loadingController.create).toHaveBeenCalledTimes(1);
+      expect(loadingSpinner.present).toHaveBeenCalledTimes(1);
+    });
 
-    // it('assigns the car show', () => {
-    //   expect(component.carShow).toEqual(carShow);
-    // });
+    it('initializes the carShow properties', () => {
+      expect(component.carShow.id).toBeUndefined();
+      expect(component.carShow.date).toEqual('2017-03-17');
+      expect(component.carShow.year).toEqual(2017);
+      expect(component.carShow.name).toEqual('Annual Car Show - 2017');
+    });
 
-    // it('shows a loading spinner', () => {
-    //   expect(loadingController.create).toHaveBeenCalledTimes(1);
-    //   expect(loadingSpinner.present).toHaveBeenCalledTimes(1);
-    // });
+    it('gets the car classes', () => {
+      expect(carClassesService.getAll).toHaveBeenCalledTimes(1);
+    });
 
-    // it('dismisses the loading spinner', () => {
-    //   expect(loadingSpinner.dismiss).toHaveBeenCalledTimes(1);
-    // });
+    it('assigns the car classes without ID', () => {
+      const expected = testCarClasses.map(c => ({
+        name: c.name,
+        description: c.description,
+        active: c.active
+      }));
+      expect(component.carShowClasses).toEqual(expected);
+    });
+
+    it('dismisses the loading spinner', () => {
+      expect(loadingSpinner.dismiss).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('create show', () => {
-    // beforeEach(() => {
-    //   loadingController.create.calls.reset();
-    //   loadingSpinner.dismiss.calls.reset();
-    //   loadingSpinner.present.calls.reset();
-    // });
+    beforeEach(() => {
+      carShowsService.save.and.returnValue(
+        Promise.resolve({
+          id: 73,
+          date: '2017-03-17',
+          year: 2017,
+          name: 'Annual Car Show - 2017'
+        })
+      );
+      loadingController.create.calls.reset();
+      loadingSpinner.dismiss.calls.reset();
+      loadingSpinner.present.calls.reset();
+    });
 
-    // it('creates the show', async () => {
-    //   await component.createShow();
-    //   expect(carShowsService.save).toHaveBeenCalledTimes(1);
-    //   expect(carShowsService.save).toHaveBeenCalledWith(carShow);
-    // });
+    it('shows a loading spinner', async () => {
+      await component.createShow();
+      expect(loadingController.create).toHaveBeenCalledTimes(1);
+      expect(loadingSpinner.present).toHaveBeenCalledTimes(1);
+    });
 
-    // it('shows a loading spinner', async () => {
-    //   await component.createShow();
-    //   expect(loadingController.create).toHaveBeenCalledTimes(1);
-    //   expect(loadingSpinner.present).toHaveBeenCalledTimes(1);
-    // });
+    it('saves the show', async () => {
+      await component.createShow();
+      expect(carShowsService.save).toHaveBeenCalledTimes(1);
+      expect(carShowsService.save).toHaveBeenCalledWith({
+        date: '2017-03-17',
+        year: 2017,
+        name: 'Annual Car Show - 2017'
+      });
+    });
 
-    // it('navigates back to the starting page', async () => {
-    //   await component.createShow();
-    //   expect(navController.goBack).toHaveBeenCalledTimes(1);
-    // });
+    it('saves the show classes', async () => {
+      const expected = testCarClasses.map(c => ({
+        name: c.name,
+        description: c.description,
+        active: c.active,
+        carShowRid: 73
+      }));
+      await component.createShow();
+      expect(carClassesService.saveAll).toHaveBeenCalledTimes(1);
+      expect(carClassesService.saveAll).toHaveBeenCalledWith(expected);
+    });
 
-    // it('dismisses the loading spinner', async () => {
-    //   await component.createShow();
-    //   expect(loadingSpinner.dismiss).toHaveBeenCalledTimes(1);
-    // });
+    it('navigates back to the starting page', async () => {
+      await component.createShow();
+      expect(navController.goBack).toHaveBeenCalledTimes(1);
+    });
+
+    it('dismisses the loading spinner', async () => {
+      await component.createShow();
+      expect(loadingSpinner.dismiss).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('close', () => {

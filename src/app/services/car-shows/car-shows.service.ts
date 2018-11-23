@@ -57,32 +57,33 @@ export class CarShowsService {
   }
 
   async save(carShow: CarShow): Promise<CarShow> {
+    const show = { ...carShow };
+    show.year = (new Date(show.date)).getFullYear();
     await this.database.ready();
     if (carShow.id) {
-      return this.updateExistingShow(carShow);
+      return this.updateExistingShow(show);
     } else {
-      return this.saveNewShow(carShow);
+      return this.saveNewShow(show);
     }
   }
 
   private async saveNewShow(carShow: CarShow): Promise<CarShow> {
-    const show: CarShow = { ...carShow };
     await this.database.handle.transaction(tx => {
       tx.executeSql(
         'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarShows',
         [],
         (t, r) => {
-          show.id = r.rows.item(0).newId;
+          carShow.id = r.rows.item(0).newId;
         }
       );
       tx.executeSql(
         'INSERT INTO CarShows (id, name, date, year) VALUES (?, ?, ?, ?)',
-        [show.id, show.name, show.date, show.year],
+        [carShow.id, carShow.name, carShow.date, carShow.year],
         (t, r) => {}
       );
     });
     this.changed.next();
-    return show;
+    return carShow;
   }
 
   private async updateExistingShow(carShow: CarShow): Promise<CarShow> {

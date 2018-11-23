@@ -26,9 +26,9 @@
       </ion-label>
     </ion-item-divider>
 
-    <ion-item *ngFor="let show of carShow?.classes">
-      <ion-label>{{show.description}}</ion-label>
-      <ion-toggle slot="end" [(ngModel)]="show.active"></ion-toggle>
+    <ion-item *ngFor="let c of carShowClasses">
+      <ion-label>{{c.description}}</ion-label>
+      <ion-toggle slot="end" [(ngModel)]="c.active"></ion-toggle>
     </ion-item>
   </ion-list>
 </ion-content>
