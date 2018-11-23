@@ -162,7 +162,7 @@ describe('CarShowsService', () => {
       beforeEach(() => {
         testShow = {
           id: 7,
-          name: 'Luckyj number 7 show',
+          name: 'Lucky number 7 show',
           date: '2019-07-07',
           year: 2019
         };
@@ -200,9 +200,34 @@ describe('CarShowsService', () => {
         ]);
       });
 
-      it('resolves the car show', async () => {
-        const show = await carShowsService.save(testShow);
-        expect(show).toEqual(testShow);
+      it('uses the year associated with the date', async () => {
+        await carShowsService.save({
+          id: 7,
+          name: 'Lucky number 7 show',
+          date: '2015-07-07',
+          year: 2019
+        });
+        expect(transaction.executeSql.calls.argsFor(0)[1]).toEqual([
+          'Lucky number 7 show',
+          '2015-07-07',
+          2015,
+          7
+        ]);
+      });
+
+      it('resolves the car show as updated', async () => {
+        const show = await carShowsService.save({
+          id: 320,
+          name: 'Pi-Day Show',
+          date: '2017-03-14',
+          year: 2018
+        });
+        expect(show).toEqual({
+          id: 320,
+          name: 'Pi-Day Show',
+          date: '2017-03-14',
+          year: 2017
+        });
       });
 
       it('triggers the changed subject', async () => {
@@ -260,9 +285,32 @@ describe('CarShowsService', () => {
         ]);
       });
 
+      it('overrides the year based on the date', async () => {
+        await carShowsService.save({
+          name: 'Some new show',
+          date: '2018-07-07',
+          year: 2019
+        });
+        expect(transaction.executeSql.calls.argsFor(1)[1]).toEqual([
+          4,
+          'Some new show',
+          '2018-07-07',
+          2018
+        ]);
+      });
+
       it('resolves the newly saved show', async () => {
-        const show = await carShowsService.save(testShow);
-        expect(show).toEqual({ id: 4, ...testShow });
+        const show = await carShowsService.save({
+          date: '2018-08-09',
+          name: 'World Painted Blood',
+          year: 2019
+        });
+        expect(show).toEqual({
+          id: 4,
+          name: 'World Painted Blood',
+          date: '2018-08-09',
+          year: 2018
+        });
       });
 
       it('triggers the changed subject', async () => {

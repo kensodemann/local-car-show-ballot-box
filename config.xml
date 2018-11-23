@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="io.ionic.starter" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>car-show-ballot-box</name>
-    <description>An awesome Ionic/Cordova app.</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+<widget id="com.kensodemann.carshowballotbox" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <name>Car Show Voting</name>
+    <description>Handle the ballot counting for the main Waukesha Old Car Club show</description>
+    <author email="ken.sodemann@gmail.com" href="http://kensodemann.github.io/">Ken Sodemann</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -80,9 +80,11 @@
     <plugin name="cordova-plugin-whitelist" spec="~1.3.3" />
     <plugin name="cordova-plugin-device" spec="~2.0.2" />
     <plugin name="cordova-plugin-splashscreen" spec="~5.0.2" />
-    <plugin name="cordova-plugin-ionic-webview" spec="~2.2.3" />
+    <plugin name="cordova-plugin-ionic-webview" spec="~2.2.3">
+        <variable name="ANDROID_SUPPORT_ANNOTATIONS_VERSION" value="27.+" />
+    </plugin>
     <plugin name="cordova-plugin-ionic-keyboard" spec="~2.1.3" />
-    <plugin name="cordova-sqlite-storage" spec="2.5.1" />
+    <plugin name="cordova-sqlite-storage" spec="~2.5.1" />
     <engine name="ios" spec="~4.5.5" />
-    <engine name="android" spec="~7.1.3" />
+    <engine name="android" spec="~7.1.4" />
 </widget>

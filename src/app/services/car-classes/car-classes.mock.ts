@@ -1,5 +1,7 @@
 export function createCarClassesServiceMock() {
   return jasmine.createSpyObj('CarClassesService', {
-    getAll: Promise.resolve([])
+    getAll: Promise.resolve([]),
+    save: Promise.resolve({}),
+    saveAll: Promise.resolve([]),
   });
 }
