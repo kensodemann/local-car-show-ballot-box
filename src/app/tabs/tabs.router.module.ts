@@ -2,8 +2,9 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
 import { TabsPage } from './tabs.page';
-import { CarShowsPage } from '../car-shows/car-shows.page';
 import { BallotsPage } from '../ballots/ballots.page';
+import { CarShowsPage } from '../car-shows/car-shows.page';
+import { DebugPage } from '../debug/debug.page';
 import { ResultsPage } from '../results/results.page';
 
 const routes: Routes = [
@@ -17,14 +18,19 @@ const routes: Routes = [
         pathMatch: 'full'
       },
       {
+        path: 'ballots',
+        outlet: 'ballots',
+        component: BallotsPage
+      },
+      {
         path: 'car-shows',
         outlet: 'car-shows',
         component: CarShowsPage
       },
       {
-        path: 'ballots',
-        outlet: 'ballots',
-        component: BallotsPage
+        path: 'debug',
+        outlet: 'debug',
+        component: DebugPage
       },
       {
         path: 'results',

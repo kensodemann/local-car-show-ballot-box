@@ -1,7 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { CurrentCarShowComponent } from './current-car-show.component';
-import { testCarShowsOld } from '../../services/car-shows';
+import { testCarShows } from '../../services/car-shows';
 import { deepCopy } from '../../../../test/util';
 
 describe('CurrentCarShowComponent', () => {
@@ -18,7 +18,7 @@ describe('CurrentCarShowComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(CurrentCarShowComponent);
     component = fixture.componentInstance;
-    component.carShow = deepCopy(testCarShowsOld.find(c => c.id === 2));
+    component.carShow = deepCopy(testCarShows.find(c => c.id === 2));
     fixture.detectChanges();
   });
 

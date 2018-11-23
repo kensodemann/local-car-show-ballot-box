@@ -8,6 +8,9 @@
   <ion-tab tab="results-view">
     <ion-router-outlet name="results"></ion-router-outlet>
   </ion-tab>
+  <ion-tab tab="debug-view">
+    <ion-router-outlet name="debug"></ion-router-outlet>
+  </ion-tab>
 
   <ion-tab-bar slot="bottom">
     <ion-tab-button tab="car-shows-view" href="/tabs/(car-shows:car-shows)">
@@ -21,6 +24,10 @@
     <ion-tab-button tab="results-view" href="/tabs/(results:results)" [disabled]="noCurrentShow">
       <ion-label>Results</ion-label>
       <ion-icon name="list-box"></ion-icon>
+    </ion-tab-button>
+    <ion-tab-button tab="debug-view" href="/tabs/(debug:debug)">
+      <ion-label>Debug</ion-label>
+      <ion-icon name="bug"></ion-icon>
     </ion-tab-button>
   </ion-tab-bar>
 </ion-tabs>

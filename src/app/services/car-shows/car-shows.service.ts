@@ -26,8 +26,7 @@ export class CarShowsService {
             id: show.id,
             name: show.name,
             date: show.date,
-            year: show.year,
-            classes: []
+            year: show.year
           });
         }
       });

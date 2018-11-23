@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar color="danger">
+    <ion-title>Debug Panel</ion-title>
+    <ion-buttons slot="primary">
+      <ion-button icon-only (click)="loadData()">
+        <ion-icon name="refresh"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding>
+  <ion-list>
+    <ion-list-header><ion-label>Car Classes</ion-label></ion-list-header>
+    <ion-item *ngFor="let class of carClasses">
+      <ion-label
+        >{{ class.id }}, {{ class.name }}, {{ class.description }},
+        {{ class.active }}</ion-label
+      >
+    </ion-item>
+
+    <ion-list-header><ion-label>Current Car Show</ion-label></ion-list-header>
+    <ion-item>
+      <ion-label *ngIf="currentCarShow">
+        {{ currentCarShow.id }}, {{ currentCarShow.name }},
+        {{ currentCarShow.date }}, {{ currentCarShow.year }}
+      </ion-label>
+      <ion-label *ngIf="!currentCarShow"> None! </ion-label>
+    </ion-item>
+
+    <ion-list-header><ion-label>All Car Shows</ion-label></ion-list-header>
+    <ion-item *ngFor="let show of carShows">
+      <ion-label>
+        {{ show.id }} {{ show.name }}, {{ show.date }}, {{ show.year }}
+      </ion-label>
+    </ion-item>
+
+    <ion-list-header>
+      <ion-label>All Car Show Classes</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let class of carShowClasses">
+      <ion-label
+        >{{ class.id }}, {{ class.name }}, {{ class.description }},
+        {{ class.active }}, {{ class.carShowRid }}</ion-label
+      >
+    </ion-item>
+  </ion-list>
+</ion-content>

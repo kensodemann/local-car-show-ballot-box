@@ -5,7 +5,7 @@ import { CarShowsPage } from './car-shows.page';
 import {
   CarShowsService,
   createCarShowsServiceMock,
-  testCarShowsOld
+  testCarShows
 } from '../services/car-shows';
 import { CarShow } from '../models/car-show';
 import { deepCopy } from '../../../test/util';
@@ -18,7 +18,7 @@ describe('CarShowsPage', () => {
   let getAllPromise: Promise<Array<CarShow>>;
 
   beforeEach(async () => {
-    carShows = deepCopy(testCarShowsOld);
+    carShows = deepCopy(testCarShows);
     carShowsService = createCarShowsServiceMock();
     getAllPromise = Promise.resolve(carShows);
     carShowsService.getAll.and.returnValue(getAllPromise);
@@ -46,7 +46,7 @@ describe('CarShowsPage', () => {
 
     it('assigns the returned shows', async () => {
       await getAllPromise;
-      expect(component.allCarShows).toEqual(testCarShowsOld);
+      expect(component.allCarShows).toEqual(testCarShows);
     });
   });
 
@@ -64,7 +64,7 @@ describe('CarShowsPage', () => {
     it('assigns the returned shows', async () => {
       carShowsService.changed.next();
       await getAllPromise;
-      expect(component.allCarShows).toEqual(testCarShowsOld);
+      expect(component.allCarShows).toEqual(testCarShows);
     });
   });
 });
