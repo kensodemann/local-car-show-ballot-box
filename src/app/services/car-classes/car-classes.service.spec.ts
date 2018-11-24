@@ -48,7 +48,7 @@ describe('CarClassesService', () => {
 
         rows = new MockResultRows(classes);
         transaction = createSQLiteTransactionMock();
-        transaction.executeSql.and.callFake((sql, params, fn) => {
+        transaction.executeSql.and.callFake((_sql, _params, fn) => {
           fn(transaction, { rows });
         });
         database.handle.transaction.and.callFake(fn => {
@@ -99,7 +99,7 @@ describe('CarClassesService', () => {
 
         rows = new MockResultRows(classes);
         transaction = createSQLiteTransactionMock();
-        transaction.executeSql.and.callFake((sql, params, fn) => {
+        transaction.executeSql.and.callFake((_sql, _params, fn) => {
           fn(transaction, { rows });
         });
         database.handle.transaction.and.callFake(fn => {
@@ -147,7 +147,7 @@ describe('CarClassesService', () => {
           };
           const rows = new MockResultRows([{ newId: 19 }]);
           transaction = createSQLiteTransactionMock();
-          transaction.executeSql.and.callFake((sql, params, fn) => {
+          transaction.executeSql.and.callFake((sql, _params, fn) => {
             const select = /SELECT/.test(sql);
             fn(transaction, { rows: select ? rows : [] });
           });
@@ -199,7 +199,7 @@ describe('CarClassesService', () => {
             active: true
           };
           transaction = createSQLiteTransactionMock();
-          transaction.executeSql.and.callFake((sql, params, fn) => {
+          transaction.executeSql.and.callFake((_sql, _params, fn) => {
             fn(transaction, { rows: [] });
           });
           database.handle.transaction.and.callFake(fn => {
@@ -250,7 +250,7 @@ describe('CarClassesService', () => {
           };
           const rows = new MockResultRows([{ newId: 73 }]);
           transaction = createSQLiteTransactionMock();
-          transaction.executeSql.and.callFake((sql, params, fn) => {
+          transaction.executeSql.and.callFake((sql, _params, fn) => {
             const select = /SELECT/.test(sql);
             fn(transaction, { rows: select ? rows : [] });
           });
@@ -304,7 +304,7 @@ describe('CarClassesService', () => {
             carShowRid: 3
           };
           transaction = createSQLiteTransactionMock();
-          transaction.executeSql.and.callFake((sql, params, fn) => {
+          transaction.executeSql.and.callFake((_sql, _params, fn) => {
             fn(transaction, { rows: [] });
           });
           database.handle.transaction.and.callFake(fn => {
@@ -396,7 +396,7 @@ describe('CarClassesService', () => {
         beforeEach(() => {
           const rows = new MockResultRows([{ newId: 420 }]);
           transaction = createSQLiteTransactionMock();
-          transaction.executeSql.and.callFake((sql, params, fn) => {
+          transaction.executeSql.and.callFake((sql, _params, fn) => {
             const select = /SELECT/.test(sql);
             fn(transaction, { rows: select ? rows : [] });
           });
@@ -498,7 +498,7 @@ describe('CarClassesService', () => {
         beforeEach(() => {
           const rows = new MockResultRows([{ newId: 420 }]);
           transaction = createSQLiteTransactionMock();
-          transaction.executeSql.and.callFake((sql, params, fn) => {
+          transaction.executeSql.and.callFake((sql, _params, fn) => {
             const select = /SELECT/.test(sql);
             fn(transaction, { rows: select ? rows : [] });
           });

@@ -6,7 +6,6 @@ import {
   tick
 } from '@angular/core/testing';
 import { LoadingController } from '@ionic/angular';
-import { of } from 'rxjs';
 
 import { TabsPage } from './tabs.page';
 import {
