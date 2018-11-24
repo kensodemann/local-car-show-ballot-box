@@ -1,5 +1,4 @@
 import { CarShow } from '../../models/car-show';
-import { CarClass } from '../../models/car-class';
 
 export const testCarShows: Array<CarShow> = [
   {

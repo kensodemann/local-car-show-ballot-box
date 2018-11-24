@@ -35,7 +35,7 @@ export class CarClassesService {
   private async getCarClasses(): Promise<Array<CarClass>> {
     const carClasses: Array<CarClass> = [];
     await this.database.handle.transaction(tx => {
-      tx.executeSql('SELECT * FROM CarClasses ORDER BY name', [], (t, r) => {
+      tx.executeSql('SELECT * FROM CarClasses ORDER BY name', [], (_t, r) => {
         for (let idx = 0; idx < r.rows.length; idx++) {
           const c = r.rows.item(idx);
           carClasses.push({
@@ -56,7 +56,7 @@ export class CarClassesService {
       tx.executeSql(
         'SELECT * FROM CarShowClasses WHERE carShowRid = ? ORDER BY name',
         [carShowId],
-        (t, r) => {
+        (_t, r) => {
           for (let idx = 0; idx < r.rows.length; idx++) {
             const c = r.rows.item(idx);
             carClasses.push({
@@ -85,14 +85,14 @@ export class CarClassesService {
       tx.executeSql(
         'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarClasses',
         [],
-        (t, r) => {
+        (_t, r) => {
           cls.id = r.rows.item(0).newId;
         }
       );
       tx.executeSql(
         'INSERT INTO CarClasses (id, name, description, active) VALUES (?, ?, ?, ?)',
         [cls.id, cls.name, cls.description, cls.active ? 1 : 0],
-        (t, r) => {}
+        () => {}
       );
     });
     return cls;
@@ -108,7 +108,7 @@ export class CarClassesService {
           carClass.active ? 1 : 0,
           carClass.id
         ],
-        (t, r) => {}
+        () => {}
       );
     });
     return carClass;
@@ -126,14 +126,14 @@ export class CarClassesService {
       tx.executeSql(
         'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarShowClasses',
         [],
-        (t, r) => {
+        (_t, r) => {
           cls.id = r.rows.item(0).newId;
         }
       );
       tx.executeSql(
         'INSERT INTO CarShowClasses (id, name, description, active, carShowRid) VALUES (?, ?, ?, ?, ?)',
         [cls.id, cls.name, cls.description, cls.active ? 1 : 0, cls.carShowRid],
-        (t, r) => {}
+        () => {}
       );
     });
     return cls;
@@ -150,7 +150,7 @@ export class CarClassesService {
           carClass.carShowRid,
           carClass.id
         ],
-        (t, r) => {}
+        () => {}
       );
     });
     return carClass;
@@ -174,7 +174,7 @@ export class CarClassesService {
       tx.executeSql(
         'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarShowClasses',
         [],
-        (t, r) => {
+        (_t, r) => {
           id = r.rows.item(0).newId;
         }
       );
@@ -183,7 +183,7 @@ export class CarClassesService {
         tx.executeSql(
           'INSERT INTO CarShowClasses (id, name, description, active, carShowRid) VALUES (?, ?, ?, ?, ?)',
           [c.id, c.name, c.description, c.active ? 1 : 0, c.carShowRid],
-          (t, r) => {}
+          () => {}
         );
       });
     });
@@ -198,7 +198,7 @@ export class CarClassesService {
         tx.executeSql(
           'UPDATE CarShowClasses SET name = ?, description = ?, active = ?, carShowRid = ? WHERE id = ?',
           [c.name, c.description, c.active ? 1 : 0, c.carShowRid, c.id],
-          (t, r) => {}
+          () => {}
         )
       );
     });

@@ -19,7 +19,7 @@ export class CarShowsService {
     const carShows: Array<CarShow> = [];
     await this.database.ready();
     await this.database.handle.transaction(tx => {
-      tx.executeSql('SELECT * FROM CarShows ORDER BY year', [], (t, r) => {
+      tx.executeSql('SELECT * FROM CarShows ORDER BY year', [], (_t, r) => {
         for (let idx = 0; idx < r.rows.length; idx++) {
           const show = r.rows.item(idx);
           carShows.push({
@@ -38,7 +38,7 @@ export class CarShowsService {
     const year = new Date().getFullYear();
     await this.database.ready();
     await this.database.handle.transaction(tx => {
-      tx.executeSql('SELECT * FROM CarShows WHERE year = ?', [year], (t, r) => {
+      tx.executeSql('SELECT * FROM CarShows WHERE year = ?', [year], (_t, r) => {
         if (r.rows.length > 0) {
           const show = r.rows.item(0);
           this.current = {
@@ -71,14 +71,14 @@ export class CarShowsService {
       tx.executeSql(
         'SELECT COALESCE(MAX(id), 0) + 1 AS newId FROM CarShows',
         [],
-        (t, r) => {
+        (_t, r) => {
           carShow.id = r.rows.item(0).newId;
         }
       );
       tx.executeSql(
         'INSERT INTO CarShows (id, name, date, year) VALUES (?, ?, ?, ?)',
         [carShow.id, carShow.name, carShow.date, carShow.year],
-        (t, r) => {}
+        () => {}
       );
     });
     this.changed.next();
@@ -90,7 +90,7 @@ export class CarShowsService {
       tx.executeSql(
         'UPDATE CarShows SET name = ?, date = ?, year = ? WHERE id = ?',
         [carShow.name, carShow.date, carShow.year, carShow.id],
-        (t, r) => {}
+        () => {}
       );
     });
     this.changed.next();
