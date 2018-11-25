@@ -184,7 +184,7 @@ describe('CarClassesService', () => {
           ]);
         });
 
-        it('resolves the newly saved show', async () => {
+        it('resolves the newly saved class', async () => {
           const show = await carClassesService.save(testClass);
           expect(show).toEqual({ id: 19, ...testClass });
         });
@@ -232,7 +232,7 @@ describe('CarClassesService', () => {
           ]);
         });
 
-        it('resolves the car show', async () => {
+        it('resolves the car class', async () => {
           const show = await carClassesService.save(testClass);
           expect(show).toEqual(testClass);
         });
@@ -288,7 +288,7 @@ describe('CarClassesService', () => {
           ]);
         });
 
-        it('resolves the newly saved show', async () => {
+        it('resolves the newly saved class', async () => {
           const show = await carClassesService.save(testClass);
           expect(show).toEqual({ id: 73, ...testClass });
         });
@@ -338,7 +338,7 @@ describe('CarClassesService', () => {
           ]);
         });
 
-        it('resolves the car show', async () => {
+        it('resolves the car class', async () => {
           const show = await carClassesService.save(testClass);
           expect(show).toEqual(testClass);
         });

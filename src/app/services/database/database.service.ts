@@ -79,6 +79,7 @@ export class DatabaseService {
     transaction.executeSql(
       this.createTableSQL('CarShowBallots', [
         id,
+        { name: 'timestamp', type: 'TEXT' },
         { name: 'carShowRid', type: 'INTEGER' }
       ])
     );

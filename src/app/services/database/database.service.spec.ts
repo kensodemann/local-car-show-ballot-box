@@ -83,7 +83,7 @@ describe('DatabaseService', () => {
     it('has created the CarShowBallots table', async () => {
       await database.ready();
       expect(transaction.executeSql).toHaveBeenCalledWith(
-        'CREATE TABLE IF NOT EXISTS CarShowBallots (id INTEGER PRIMARY KEY, carShowRid INTEGER)'
+        'CREATE TABLE IF NOT EXISTS CarShowBallots (id INTEGER PRIMARY KEY, timestamp TEXT, carShowRid INTEGER)'
       );
     });
 
