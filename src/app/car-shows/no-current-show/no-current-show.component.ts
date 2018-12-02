@@ -7,11 +7,11 @@ import { NavController } from '@ionic/angular';
   styleUrls: ['./no-current-show.component.scss']
 })
 export class NoCurrentShowComponent implements OnInit {
-  constructor(private navCtrl: NavController) {}
+  constructor(private navController: NavController) {}
 
   ngOnInit() {}
 
   createShowClicked() {
-    this.navCtrl.navigateForward('create-new-show');
+    this.navController.navigateForward('create-new-show');
   }
 }

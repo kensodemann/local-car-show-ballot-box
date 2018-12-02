@@ -7,7 +7,8 @@ const routes: Routes = [
     path: 'create-new-show',
     loadChildren:
       './create-new-show/create-new-show.module#CreateNewShowPageModule'
-  }
+  },
+  { path: 'ballot-editor', loadChildren: './ballot-editor/ballot-editor.module#BallotEditorPageModule' }
 ];
 @NgModule({
   imports: [RouterModule.forRoot(routes)],

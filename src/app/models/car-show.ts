@@ -1,4 +1,4 @@
-export class CarShow {
+export interface CarShow {
   id?: number;
   name: string;
   date: string;

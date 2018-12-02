@@ -1,5 +1,5 @@
-export class Ballot {
+export interface Ballot {
   id?: number;
-  timestamp: string;
+  timestamp?: string;
   carShowRid: number;
 }

@@ -1,7 +1,7 @@
-export class Vote {
+export interface Vote {
   id?: number;
   carNumber?: number;
-  carShowBallotRid: number;
+  carShowBallotRid?: number;
   carShowClassRid: number;
 }
 
